@@ -2,12 +2,12 @@
 Terminal-style to-do list that feels like it came straight from a 90s PC.
 Organize your day in a minimalist way — no mouse, no distractions, just text and charm.
 
-## ⚙️ Features
-- ✏️ Add new tasks  
-- ✅ View your task list  
-- ❌ Remove tasks by number  
-- 💾 (Optional) Save your tasks to a file so they persist between sessions  
-- 🕹️ Classic terminal menu navigation — no clutter, just focus  
+## Features
+- Add new tasks  
+- View your task list  
+- Remove tasks by number  
+- Save your tasks to a file so they persist between sessions  
+- Classic terminal menu navigation — no clutter, just focus  
 
 ## How It Works
 You interact with the program through the command line:
@@ -17,7 +17,7 @@ You interact with the program through the command line:
 3. Remove a task
 4. Exit
 ```
-## Setuop & Run
+## Setup & Run 💾 
 1. Save the code as:
 ```bash
 Todo.java
@@ -30,7 +30,7 @@ java todo
 ```
 3. Follow the prompts and enjoy!
 ---
-## Example Output
+## Example Output 
 ```bash
 ╔════════════════════════╗
 ║      RETRO TO-DO       ║
