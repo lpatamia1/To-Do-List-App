@@ -21,11 +21,12 @@ You interact with the program through the command line:
 1. Save the code as:
 ```bash
 Todo.java
+ColorText.java
 ```
 
 2. Compile and run:
 ```bash
-javac todo.java
+javac ColorText.java todo.java
 java todo
 ```
 3. Follow the prompts and enjoy!
