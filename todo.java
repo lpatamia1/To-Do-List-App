@@ -1,107 +1,76 @@
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
-public class RetroTodo {
-    private static final ArrayList<String> tasks = new ArrayList<>();
-    private static final Scanner scanner = new Scanner(System.in);
-
-    // ANSI Colors
-    private static final String RESET = "\u001B[0m";
-    private static final String PINK = "\u001B[95m";
-    private static final String CYAN = "\u001B[96m";
-    private static final String YELLOW = "\u001B[93m";
-    private static final String GREEN = "\u001B[92m";
-    private static final String PURPLE = "\u001B[94m";
-    private static final String GRAY = "\u001B[90m";
+public class RetroToDo {
+    private static final String FILE_NAME = "tasks.txt";
+    private static final List<String> tasks = new ArrayList<>();
 
     public static void main(String[] args) {
-        showBanner();
+        loadTasks();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("✨ Retro To-Do List ✨");
 
-        int choice;
-        do {
-            printMenu();
-            System.out.print(PINK + "♡ Choose an option (1–5): " + RESET);
-            while (!scanner.hasNextInt()) {
-                System.out.println(YELLOW + "Oops! Enter a number please (1–5)." + RESET);
-                scanner.next();
-            }
-            choice = scanner.nextInt();
-            scanner.nextLine(); // clear input
+        while (true) {
+            System.out.println("\n1️⃣ Add Task\n2️⃣ View Tasks\n3️⃣ Mark Complete\n4️⃣ Exit");
+            System.out.print("Choose: ");
+            String choice = scanner.nextLine();
 
             switch (choice) {
-                case 1 -> addTask();
-                case 2 -> viewTasks();
-                case 3 -> removeTask();
-                case 4 -> clearTasks();
-                case 5 -> exitApp();
-                default -> System.out.println(YELLOW + "That’s not an option, silly! Try again. ♡" + RESET);
+                case "1":
+                    System.out.print("Enter task: ");
+                    tasks.add(scanner.nextLine());
+                    saveTasks();
+                    break;
+                case "2":
+                    showTasks();
+                    break;
+                case "3":
+                    showTasks();
+                    System.out.print("Enter number to complete: ");
+                    int index = Integer.parseInt(scanner.nextLine()) - 1;
+                    if (index >= 0 && index < tasks.size()) {
+                        String completed = tasks.remove(index);
+                        System.out.println("✅ Done: " + completed);
+                        saveTasks();
+                    }
+                    break;
+                case "4":
+                    System.out.println("💾 Exiting… your tasks are saved!");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("❓ Invalid option.");
             }
-        } while (choice != 5);
-    }
-
-    private static void showBanner() {
-        System.out.println(PURPLE + "╔══════════════════════════════╗");
-        System.out.println("║     ✨ RETRO TO-DO LIST ✨     ║");
-        System.out.println("╚══════════════════════════════╝" + RESET);
-        System.out.println(GRAY + "       “Stay organized, cutie!” 💾" + RESET);
-    }
-
-    private static void printMenu() {
-        System.out.println(CYAN + "\n⋆｡°✩ MENU ✩°｡⋆" + RESET);
-        System.out.println("1. Add a task ✍️");
-        System.out.println("2. View tasks 📋");
-        System.out.println("3. Remove a task ❌");
-        System.out.println("4. Clear all 🧹");
-        System.out.println("5. Exit 🌙");
-    }
-
-    private static void addTask() {
-        System.out.print(GREEN + "Enter a new task: " + RESET);
-        String task = scanner.nextLine();
-        if (!task.isBlank()) {
-            tasks.add(task);
-            System.out.println(PINK + "💖 Task added: " + task + RESET);
-        } else {
-            System.out.println(YELLOW + "Hmm… you didn’t write anything!" + RESET);
         }
     }
 
-    private static void viewTasks() {
-        System.out.println(CYAN + "\n⋆｡°✩ YOUR TASKS ✩°｡⋆" + RESET);
+    private static void showTasks() {
         if (tasks.isEmpty()) {
-            System.out.println(GRAY + "Nothing here yet! Add something cute ✨" + RESET);
+            System.out.println("🌈 No tasks yet!");
         } else {
             for (int i = 0; i < tasks.size(); i++) {
-                System.out.println(PURPLE + (i + 1) + ". " + RESET + tasks.get(i));
+                System.out.println((i + 1) + ". " + tasks.get(i));
             }
         }
     }
 
-    private static void removeTask() {
-        if (tasks.isEmpty()) {
-            System.out.println(YELLOW + "No tasks to remove 💭" + RESET);
-            return;
-        }
-        viewTasks();
-        System.out.print(GREEN + "Which number to remove? " + RESET);
-        int index = scanner.nextInt();
-        scanner.nextLine();
-
-        if (index > 0 && index <= tasks.size()) {
-            String removed = tasks.remove(index - 1);
-            System.out.println(PINK + "❀ Removed: " + removed + RESET);
-        } else {
-            System.out.println(YELLOW + "That number doesn’t exist 💔" + RESET);
+    private static void saveTasks() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_NAME))) {
+            for (String task : tasks) writer.println(task);
+        } catch (IOException e) {
+            System.out.println("❌ Error saving tasks: " + e.getMessage());
         }
     }
 
-    private static void clearTasks() {
-        tasks.clear();
-        System.out.println(CYAN + "🧹 All clean! Your list is sparkling ✨" + RESET);
-    }
+    private static void loadTasks() {
+        File file = new File(FILE_NAME);
+        if (!file.exists()) return;
 
-    private static void exitApp() {
-        System.out.println(PINK + "\nThanks for using Retro To-Do! 💾");
-        System.out.println("Remember: you’re doing amazing. 🌸" + RESET);
+        try (Scanner fileScanner = new Scanner(file)) {
+            while (fileScanner.hasNextLine()) tasks.add(fileScanner.nextLine());
+            System.out.println("📂 Loaded " + tasks.size() + " saved task(s).");
+        } catch (IOException e) {
+            System.out.println("⚠️ Could not load previous tasks.");
+        }
     }
 }
