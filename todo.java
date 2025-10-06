@@ -1,9 +1,11 @@
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class todo {
     private static final String FILE_NAME = "tasks.txt";
     private static final List<String> tasks = new ArrayList<>();
+    private static final SimpleDateFormat timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static void main(String[] args) {
         loadTasks();
@@ -27,10 +29,12 @@ public class todo {
                     completeTask(scanner);
                     break;
                 case "4":
+                    beep();
                     ColorText.success("💾 Exiting… your tasks are saved!");
                     scanner.close();
                     return;
                 default:
+                    beep();
                     ColorText.warn("❓ Invalid option. Try again!");
             }
         }
@@ -40,10 +44,13 @@ public class todo {
         System.out.print(ColorText.YELLOW + "Enter task: " + ColorText.RESET);
         String task = scanner.nextLine().trim();
         if (!task.isEmpty()) {
-            tasks.add(task);
+            String entry = task + " (added " + timestamp.format(new Date()) + ")";
+            tasks.add(entry);
             saveTasks();
+            beep();
             ColorText.success("Task added!");
         } else {
+            beep();
             ColorText.warn("You can’t add an empty task!");
         }
     }
@@ -68,12 +75,16 @@ public class todo {
             int index = Integer.parseInt(scanner.nextLine()) - 1;
             if (index >= 0 && index < tasks.size()) {
                 String completed = tasks.remove(index);
-                ColorText.success("✅ Done: " + completed);
+                String doneMsg = completed + " ✅ (completed " + timestamp.format(new Date()) + ")";
+                beep();
+                ColorText.success(doneMsg);
                 saveTasks();
             } else {
+                beep();
                 ColorText.warn("Invalid task number!");
             }
         } catch (NumberFormatException e) {
+            beep();
             ColorText.warn("Please enter a valid number.");
         }
     }
@@ -82,6 +93,7 @@ public class todo {
         try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_NAME))) {
             for (String task : tasks) writer.println(task);
         } catch (IOException e) {
+            beep();
             ColorText.warn("Error saving tasks: " + e.getMessage());
         }
     }
@@ -98,5 +110,10 @@ public class todo {
         } catch (IOException e) {
             ColorText.warn("Could not load previous tasks.");
         }
+    }
+
+    private static void beep() {
+        System.out.print("\007"); // classic terminal bell
+        System.out.flush();
     }
 }
