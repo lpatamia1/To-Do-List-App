@@ -123,10 +123,20 @@ public class todo {
                 int end = raw.indexOf(" ", start);
                 if (end < 0) end = raw.length();
                 due = raw.substring(start, end).trim();
-                if (due.isEmpty()) due = "[NO DATE]";
+                if (due.isEmpty()) due = "[NO DUE DATE]";
             } else {
-                due = "[NO DATE]";
+                due = "[NO DUE DATE]";
             }
+            try {
+                if (due.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                    LocalDate d = LocalDate.parse(due);
+                    if (LocalDate.now().isAfter(d)) due = ColorText.RED + due + " ⚠️" + ColorText.RESET;
+                    else if (LocalDate.now().equals(d)) due = ColorText.YELLOW + due + " ⏰" + ColorText.RESET;
+                    else due = ColorText.GREEN + due + ColorText.RESET;
+                } else if (due.equals("[NO DATE]")) {
+                    due = ColorText.GRAY + due + ColorText.RESET;
+                }
+            } catch (Exception ignored) {}
 
             // Clean task name
             String taskName = raw
@@ -139,16 +149,16 @@ public class todo {
             String coloredPriority;
             switch (priority) {
                 case "[HIGH]":
-                    coloredPriority = ColorText.RED + priority + ColorText.RESET;
+                    coloredPriority = ColorText.RED + "🔥 " + priority +  ColorText.RESET;
                     break;
                 case "[MED]":
-                    coloredPriority = ColorText.YELLOW + priority + ColorText.RESET;
+                    coloredPriority = ColorText.YELLOW + "⚡ " + priority + ColorText.RESET;
                     break;
                 case "[LOW]":
-                    coloredPriority = ColorText.GREEN + priority + ColorText.RESET;
+                    coloredPriority = ColorText.GREEN + "🌿 " + priority + ColorText.RESET;
                     break;
                 case "[NONE]":
-                    coloredPriority = ColorText.GRAY + priority + ColorText.RESET;
+                    coloredPriority = ColorText.GRAY + "💤 " + priority + ColorText.RESET;
                     break;
                 default:
                     coloredPriority = priority;
@@ -162,6 +172,9 @@ public class todo {
     }
 
     pauseAndClear(new Scanner(System.in));
+    long noDate = tasks.stream().filter(t -> t.contains("[NO DATE]")).count();
+    ColorText.info(String.format("\n📊 %d total | %d without due date | %d added today | %d completed today",
+        tasks.size(), noDate, addedToday, completedToday));
 }
 
     private static void completeTask(Scanner scanner) {
@@ -294,13 +307,48 @@ public class todo {
     // --- Aesthetic Touches ---
 
     private static void retroBoot() {
-        String[] loading = {"█▒▒▒▒▒▒▒▒▒ 10%", "███▒▒▒▒▒▒▒ 30%", "██████▒▒▒▒ 60%", "██████████ 100%"};
-        for (String bar : loading) {
-            System.out.print("\r" + ColorText.PINK+ "Loading... " + bar + ColorText.RESET);
-            try { Thread.sleep(400); } catch (InterruptedException ignored) {}
+        String[] bootMsgs = {
+            "Spinning floppy drive... 💾",
+            "Installing Java Runtime... ☕",
+            "Rendering pixels of productivity... 🎨",
+            "Charging up your to-do list... ⚡",
+            "Calibrating retro vibes... 🕹️",
+            "Checking for Y2K bugs... 🧮",
+            "Loading system aesthetics... 🌈",
+            "Compiling positive energy... ✨",
+            "Booting motivation module... 🚀",
+            "Optimizing focus levels... 🔧"
+        };
+
+        // Pick 3 random messages
+        List<String> shuffled = new ArrayList<>(Arrays.asList(bootMsgs));
+        Collections.shuffle(shuffled);
+        List<String> chosen = shuffled.subList(0, 4);
+
+        System.out.println(ColorText.PINK + "🔧 Initializing Retro Environment..." + ColorText.RESET);
+
+        // Build the progress bar
+        int totalSteps = 30;
+        for (int i = 0; i <= totalSteps; i++) {
+            int progress = (i * 100) / totalSteps;
+            String bar = "█".repeat(i) + "▒".repeat(totalSteps - i);
+
+            // Always overwrite the *same* progress line
+            System.out.print("\r" + ColorText.PINK + "Loading: [" + bar + "] " + progress + "%" + ColorText.RESET);
+
+            try { Thread.sleep(100); } catch (InterruptedException ignored) {}
         }
+
+        // After bar finishes, print all messages cleanly below it
+        System.out.println(); // move below the bar
+        for (String msg : chosen) {
+            System.out.println(ColorText.PINK + msg + ColorText.RESET);
+            try { Thread.sleep(600); } catch (InterruptedException ignored) {}
+        }
+
         System.out.println("\n" + ColorText.CYAN + "✨ Ready to roll! ✨" + ColorText.RESET);
     }
+
 
     private static void showQuote() {
         String[] quotes = {
