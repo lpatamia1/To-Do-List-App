@@ -62,7 +62,6 @@ Set priority (H/M/L or blank): H
 Enter due date (YYYY-MM-DD or blank): 2025-10-09
 ✅ Task added!
 ─────────────────────────────────────────────
-
 Choose: 2
 📝 Your Tasks:
 #   Task                                   Priority             Due Date
@@ -78,7 +77,6 @@ Choose: 3
 Enter number to complete: 1
 ✅ Completed: Finish presentation slides
 ─────────────────────────────────────────────
-
 Choose: 6
 💾 Exiting… your tasks are saved!
 📅 Today’s Stats: Added 1 | Completed 1
