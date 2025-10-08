@@ -81,6 +81,7 @@ public class todo {
             saveTasks();
             beep();
             ColorText.success("Task added!");
+            pauseAndClear(scanner);
         } else {
             beep();
             ColorText.warn("You can’t add an empty task!");
@@ -91,17 +92,67 @@ public class todo {
     private static void showTasks() {
         if (tasks.isEmpty()) {
             ColorText.warn("🌈 No tasks yet!");
-        } else {
-            ColorText.info("\n📝 Your Tasks:");
-            for (int i = 0; i < tasks.size(); i++) {
-                String t = tasks.get(i);
-                boolean overdue = t.contains("Due: ") && isOverdue(t);
-                if (overdue) t += ColorText.RED + " ⚠️ Overdue!" + ColorText.RESET;
-                System.out.println(ColorText.BLUE + (i + 1) + ". " + t + ColorText.RESET);
-            }
+            pauseAndClear(new Scanner(System.in));
+            return;
         }
+
+        // --- Table Header ---
+        ColorText.info("\n📝 Your Tasks:");
+        System.out.printf(ColorText.CYAN + "%-3s %-28s %-14s %-12s%n" + ColorText.RESET,
+                "#", "Task", "Priority", "Due Date");
+        System.out.println(ColorText.CYAN + "───────────────────────────────────────────────────────────────────────" + ColorText.RESET);
+
+        // --- Table Rows ---
+        for (int i = 0; i < tasks.size(); i++) {
+            String raw = tasks.get(i);
+            String priority = "—";
+            String due = "—";
+
+            // Extract priority
+            if (raw.contains("[HIGH]")) priority = "[HIGH]";
+            else if (raw.contains("[MED]")) priority = "[MED]";
+            else if (raw.contains("[LOW]")) priority = "[LOW]";
+
+            // Extract due date
+            if (raw.contains("Due: ")) {
+                int start = raw.indexOf("Due: ") + 5;
+                int end = raw.indexOf(" ", start);
+                if (end < 0) end = raw.length();
+                due = raw.substring(start, end).trim();
+            }
+
+            // Clean task name
+            String taskName = raw
+                    .replaceAll("\\[HIGH\\]|\\[MED\\]|\\[LOW\\]", "")
+                    .replaceAll("\\| Due:.*", "")
+                    .replaceAll("\\(added.*\\)", "")
+                    .trim();
+
+            // Add colors AFTER formatting
+            String coloredPriority;
+            switch (priority) {
+                case "[HIGH]":
+                    coloredPriority = ColorText.RED + priority + ColorText.RESET;
+                    break;
+                case "[MED]":
+                    coloredPriority = ColorText.YELLOW + priority + ColorText.RESET;
+                    break;
+                case "[LOW]":
+                    coloredPriority = ColorText.GREEN + priority + ColorText.RESET;
+                    break;
+                default:
+                    coloredPriority = priority;
+                    break;
+            }
+
+
+        // --- Print each task row with spacing ---
+        System.out.printf(ColorText.BLUE + "%-3d %-37s %-23s %-12s" + ColorText.RESET + "%n",
+                (i + 1), taskName, coloredPriority, due);
     }
 
+    pauseAndClear(new Scanner(System.in));
+}
 
     private static void completeTask(Scanner scanner) {
         showTasks();
@@ -125,6 +176,7 @@ public class todo {
             beep();
             ColorText.warn("Please enter a valid number.");
         }
+        pauseAndClear(scanner);
     }
 
     private static boolean isOverdue(String taskLine) {
@@ -181,6 +233,7 @@ public class todo {
             ColorText.success("🗒️ Exported to tasks.md");
         } catch (IOException e) {
             ColorText.warn("⚠️ Could not export to Markdown.");
+            pauseAndClear(new Scanner(System.in));
         }
     }
 
@@ -212,6 +265,7 @@ public class todo {
             }
         }
         if (!found) System.out.println(ColorText.GREEN + "No tasks due soon!" + ColorText.RESET);
+        pauseAndClear(new Scanner(System.in));
     }
 
     // --- Aesthetic Touches ---
@@ -250,6 +304,20 @@ public class todo {
 
     private static void beep() {
         System.out.print("\007");
+        System.out.flush();
+    }
+
+
+// --- Utility Helpers ---
+
+    private static void pauseAndClear(Scanner scanner) {
+        System.out.println("\nPress Enter to return to menu...");
+        scanner.nextLine();           // wait for user
+        clearScreen();                // clear terminal
+    }
+
+    private static void clearScreen() {
+        System.out.print("\033[H\033[2J");
         System.out.flush();
     }
 }
