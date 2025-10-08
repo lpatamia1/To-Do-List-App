@@ -73,12 +73,14 @@ public class todo {
         }
 
         if (!task.isEmpty()) {
-            String entry = task + " " + formattedPriority +
-                (dueDate != null ? " | Due: " + dueDate : "") +
-                " (added " + timestamp.format(new Date()) + ")";
+            if (formattedPriority.isEmpty()) formattedPriority = "[NONE]";
+            String duelabel = (dueDate != null) ? " | Due: " + dueDate.toString() : "";
+            String entry = task + " " + formattedPriority + duelabel + " (added " + timestamp.format(new Date()) + ")";
+
             tasks.add(entry);
             addedToday++;
             saveTasks();
+            sortTasksByPriority();
             beep();
             ColorText.success("Task added!");
             pauseAndClear(scanner);
@@ -90,6 +92,7 @@ public class todo {
     }
 
     private static void showTasks() {
+        sortTasksByPriority();
         if (tasks.isEmpty()) {
             ColorText.warn("🌈 No tasks yet!");
             pauseAndClear(new Scanner(System.in));
@@ -112,6 +115,7 @@ public class todo {
             if (raw.contains("[HIGH]")) priority = "[HIGH]";
             else if (raw.contains("[MED]")) priority = "[MED]";
             else if (raw.contains("[LOW]")) priority = "[LOW]";
+            else priority = "[NONE]";
 
             // Extract due date
             if (raw.contains("Due: ")) {
@@ -119,6 +123,9 @@ public class todo {
                 int end = raw.indexOf(" ", start);
                 if (end < 0) end = raw.length();
                 due = raw.substring(start, end).trim();
+                if (due.isEmpty()) due = "[NO DATE]";
+            } else {
+                due = "[NO DATE]";
             }
 
             // Clean task name
@@ -139,6 +146,9 @@ public class todo {
                     break;
                 case "[LOW]":
                     coloredPriority = ColorText.GREEN + priority + ColorText.RESET;
+                    break;
+                case "[NONE]":
+                    coloredPriority = ColorText.GRAY + priority + ColorText.RESET;
                     break;
                 default:
                     coloredPriority = priority;
@@ -212,6 +222,7 @@ public class todo {
                 tasks.add(fileScanner.nextLine());
             }
             ColorText.info("📂 Loaded " + tasks.size() + " saved task(s).");
+            sortTasksByPriority();
         } catch (IOException e) {
             ColorText.warn("Could not load previous tasks.");
         }
@@ -247,7 +258,19 @@ public class todo {
             ColorText.warn("⚠️ Could not create backup file.");
         }
     }
-    
+
+    // --- Sorting Helper ---
+    private static void sortTasksByPriority() {
+        tasks.sort((a, b) -> Integer.compare(priorityValue(b), priorityValue(a))); // HIGH → LOW
+    }
+
+    private static int priorityValue(String t) {
+        if (t.contains("[HIGH]")) return 3;
+        if (t.contains("[MED]")) return 2;
+        if (t.contains("[LOW]")) return 1;
+        return 0; // No priority
+    }
+
     private static void showUpcoming() {
         ColorText.info("\n📅 Tasks due within 3 days:");
         boolean found = false;

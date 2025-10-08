@@ -7,9 +7,10 @@ public class ColorText {
     public static final String RED = "\u001B[31m";
     public static final String PURPLE = "\u001B[35m";
     public static final String PINK = "\u001B[95m";
+    public static final String GRAY = "\u001B[90m";
     // Add more colors as needed
     // Utility methods for colored messages
-    
+
 
     public static void success(String msg) { System.out.println(GREEN + msg + RESET); }
     public static void warn(String msg) { System.out.println(YELLOW + msg + RESET); }
