@@ -1,8 +1,4 @@
 [
-  {
-    "name": "Eat",
-    "priority": "LOW",
-    "due": "none",
-    "completed": false
-  }
+  {"name":"Eat", "priority":"LOW", "completed":false, "due":null},
+  {"name":"Read", "priority":"LOW", "completed":false, "due":null}
 ]

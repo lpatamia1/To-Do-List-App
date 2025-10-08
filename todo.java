@@ -4,7 +4,6 @@ import java.util.*;
 import java.time.LocalDate;
 
 public class todo {
-    private static final String FILE_NAME = "tasks.txt";
     private static final List<Task> tasks = new ArrayList<>();
     private static final SimpleDateFormat timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static int addedToday = 0;
@@ -12,7 +11,7 @@ public class todo {
 
     public static void main(String[] args) {
         retroBoot();
-        //loadTasks();
+        loadTasksJSON();
         Scanner scanner = new Scanner(System.in);
         ColorText.banner("✨ Retro To-Do List ✨");
         showQuote();
@@ -68,7 +67,6 @@ public class todo {
         tasks.add(newTask);
         addedToday++;
         Collections.sort(tasks);
-        //saveTasks();
         beep();
         ColorText.success("Task added!");
         pauseAndClear(scanner);
@@ -144,7 +142,6 @@ public class todo {
                 completedToday++;
                 beep();
                 ColorText.success("✅ Completed: " + t.getName());
-                //saveTasks();
             } else {
                 beep();
                 ColorText.warn("Invalid task number!");
@@ -172,10 +169,6 @@ public class todo {
         pauseAndClear(new Scanner(System.in));
     }
 
-    private static String escapeJson(String s) {
-        return s.replace("\\", "\\\\").replace("\"", "\\\"");
-    }
-
     private static void exportMarkdown() {
         try (PrintWriter writer = new PrintWriter(new FileWriter("tasks.md"))) {
             writer.println("# 📝 Retro To-Do List");
@@ -189,7 +182,7 @@ public class todo {
                     writer.println("- " + box + " " + t.getName() + " (" + t.getPriority() + ")");
                 }
             }
-            ColorText.success("🗒️ Exported to tasks.md");
+            ColorText.success("🗒️  Exported to tasks.md");
         } catch (IOException e) {
             ColorText.warn("⚠️ Could not export to Markdown.");
         }
@@ -249,8 +242,9 @@ public class todo {
     private static void exitApp() {
         beep();
         ColorText.line();
-        ColorText.success("💾 Exiting… your tasks are saved!");
+        ColorText.success("Exiting… your tasks are saved!");
         ColorText.info("📅 Today’s Stats: Added " + addedToday + " | Completed " + completedToday);
+        saveTasksJSON();
         exportMarkdown();
     }
 
@@ -270,5 +264,79 @@ public class todo {
     private static void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
+    }
+
+    // --- JSON Persistence ---
+
+    private static final String JSON_FILE = "tasks.json";
+
+    /** Save all tasks to a JSON file */
+    private static void saveTasksJSON() {
+        try (PrintWriter out = new PrintWriter(new FileWriter(JSON_FILE))) {
+            out.println("[");
+            for (int i = 0; i < tasks.size(); i++) {
+                Task t = tasks.get(i);
+                out.print("  {");
+                out.printf("\"name\":\"%s\", ", escapeJson(t.getName()));
+                out.printf("\"priority\":\"%s\", ", t.getPriority());
+                out.printf("\"completed\":%s, ", t.isCompleted());
+                out.printf("\"due\":%s", (t.getDue() == null ? "null" : "\"" + t.getDue() + "\""));
+                out.print("}");
+                if (i < tasks.size() - 1) out.println(",");
+                else out.println();
+            }
+            out.println("]");
+            ColorText.info("Tasks saved to tasks.json");
+        } catch (IOException e) {
+            ColorText.warn("⚠️ Could not save tasks.json: " + e.getMessage());
+        }
+    }
+
+    /** Load tasks back from the JSON file if it exists */
+    private static void loadTasksJSON() {
+        File file = new File(JSON_FILE);
+        if (!file.exists()) return;
+
+        try (Scanner reader = new Scanner(file)) {
+            StringBuilder json = new StringBuilder();
+            while (reader.hasNextLine()) json.append(reader.nextLine().trim());
+            String content = json.toString();
+
+            // Parse manually (since we're not using a JSON library)
+            String[] objects = content.split("\\},\\s*\\{");
+            for (String obj : objects) {
+                String cleaned = obj.replaceAll("[\\[\\]{}\"]", "").trim();
+                if (cleaned.isEmpty()) continue;
+
+                Map<String, String> map = new HashMap<>();
+                for (String part : cleaned.split(",")) {
+                    String[] kv = part.split(":", 2);
+                    if (kv.length == 2) map.put(kv[0].trim(), kv[1].trim());
+                }
+
+                String name = map.getOrDefault("name", "Untitled");
+                String priority = map.getOrDefault("priority", "NONE");
+                LocalDate due = null;
+                String dueRaw = map.getOrDefault("due", "").replace("\"", "").trim();
+                if (!dueRaw.isEmpty() && !"null".equalsIgnoreCase(dueRaw) && !"none".equalsIgnoreCase(dueRaw))
+                    due = LocalDate.parse(dueRaw);
+                else
+                    due = null;
+                Task t = new Task(name, priority, due);
+                if ("true".equalsIgnoreCase(map.getOrDefault("completed", "false")))
+                    t.markCompleted();
+
+                tasks.add(t);
+            }
+            Collections.sort(tasks);
+            ColorText.success("📂 Loaded " + tasks.size() + " task(s) from tasks.json");
+        } catch (Exception e) {
+            ColorText.warn("⚠️ Could not load tasks.json: " + e.getMessage());
+        }
+    }
+
+    /** Helper to escape quotes for JSON */
+    private static String escapeJson(String s) {
+        return s.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 }
