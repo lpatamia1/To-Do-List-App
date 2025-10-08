@@ -5,10 +5,11 @@ Organize your day in a minimalist way — no mouse, no distractions, just text a
 ## Features
 - Add and remove tasks with simple numbered prompts  
 - View your current task list anytime  
-- Auto-save tasks between sessions (`tasks.txt`)  
-- Timestamp new and completed items  
+- Automatic JSON persistence ('tasks.json') — your data survives restarts- Timestamp new and completed items  
 - Terminal beeps and pastel color text for extra flair  
-- Optional Markdown export (`tasks.md`)  
+- Optional Markdown export (`tasks.md`)
+- Daily stats tracking: tasks added and completed
+- Lightweight JSON serialization (manual parser, no external libraries)
 - Automatic backup creation  
 
 ## How It Works
@@ -17,55 +18,73 @@ You interact with the program through the command line:
 1. Add a task
 2. View all tasks
 3. Mark complete
-4. Export Markdown
-5. Exit
+4. Show upcoming
+5. Export Markdown
+6. Exit
 ```
 ## Setup & Run 
 1. Save the code as:
 ```bash
-ToDo.java
+todo.java
 ColorText.java
+Task.java
 ```
 
 2. Compile and run:
 ```bash
-javac ColorText.java ToDo.java
-java ToDo
+javac ColorText.java todo.java Task.java
+java todo
 ```
 3. Follow the prompts and enjoy!
 ---
 ## Example Output
 
 ```bash
+🔧 Initializing Retro Environment...
+Loading: [██████████████████████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] 100%
+Spinning floppy drive... 💾
+
 ✨ Retro To-Do List ✨
 💬 One task at a time 🪩
 
 📂 Loaded 2 saved task(s).
 ────────────────────────────
-1️⃣ Add Task
-2️⃣ View Tasks
-3️⃣ Mark Complete
-4️⃣ Exit
+1️⃣  Add Task
+2️⃣  View Tasks
+3️⃣  Mark Complete
+4️⃣  Show Upcoming
+5️⃣  Export Markdown
+6️⃣  Exit
 ────────────────────────────
 Choose: 1
-Enter task: Finish README styling
-✅ Task added! (added 2025-10-06 14:31:22)
-────────────────────────────
+Enter task: Finish presentation slides
+Set priority (H/M/L or blank): H
+Enter due date (YYYY-MM-DD or blank): 2025-10-09
+✅ Task added!
+─────────────────────────────────────────────
+
 Choose: 2
 📝 Your Tasks:
-1. Finish README styling (added 2025-10-06 14:31:22)
-2. Email project update (added 2025-10-05 09:47:13)
-────────────────────────────
+#   Task                                   Priority             Due Date
+────────────────────────────────────────────────────────────────────────────
+1   Finish presentation slides             🔥 [HIGH]             2025-10-09 ⏰
+2   Clean workspace                        🌿 [LOW]              💤 [NO DUE DATE]
+
+📊 2 total | 1 without due date | 1 added today | 0 completed today
+─────────────────────────────────────────────
+Press Enter to return to menu...
+
 Choose: 3
 Enter number to complete: 1
-✅ Done: Finish README styling (completed 2025-10-06 14:32:04)
-────────────────────────────
-Choose: 4
+✅ Completed: Finish presentation slides
+─────────────────────────────────────────────
+
+Choose: 6
 💾 Exiting… your tasks are saved!
-🔔 *beep* 
-────────────────────────────
-📦 Backup saved: tasks_backup_1738889513.txt
-Goodbye! 🌈 Keep calm and code on 💻
+📅 Today’s Stats: Added 1 | Completed 1
+🗒️ Exported to tasks.md
+📂 Serialized 2 tasks to tasks.json
+✨ Goodbye! Stay groovy and productive! 🎸
 ```
 ---
 

@@ -11,6 +11,7 @@ public class todo {
 
     public static void main(String[] args) {
         retroBoot();
+        saveTasksJSON(); // Ensure tasks are saved on startup
         loadTasksJSON();
         Scanner scanner = new Scanner(System.in);
         ColorText.banner("✨ Retro To-Do List ✨");
