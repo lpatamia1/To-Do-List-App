@@ -5,14 +5,14 @@ import java.time.LocalDate;
 
 public class todo {
     private static final String FILE_NAME = "tasks.txt";
-    private static final List<String> tasks = new ArrayList<>();
+    private static final List<Task> tasks = new ArrayList<>();
     private static final SimpleDateFormat timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static int addedToday = 0;
     private static int completedToday = 0;
 
     public static void main(String[] args) {
         retroBoot();
-        loadTasks();
+        //loadTasks();
         Scanner scanner = new Scanner(System.in);
         ColorText.banner("✨ Retro To-Do List ✨");
         showQuote();
@@ -30,7 +30,6 @@ public class todo {
                 case "4": showUpcoming(); break;
                 case "5": exportMarkdown(); break;
                 case "6": exitApp(); scanner.close(); return;
-                case "?": ColorText.info("Commands: 1-Add | 2-View | 3-Complete | 4-Upcoming | 5-Export | 6-Exit | ?-Help"); break;
                 default: beep(); ColorText.warn("❓ Invalid option. Try again!");
             }
         }
@@ -40,142 +39,97 @@ public class todo {
 
     private static void addTask(Scanner scanner) {
         System.out.print(ColorText.YELLOW + "Enter task: " + ColorText.RESET);
-        String task = scanner.nextLine().trim();
+        String name = scanner.nextLine().trim();
+        if (name.isEmpty()) {
+            beep();
+            ColorText.warn("You can’t add an empty task!");
+            return;
+        }
+
         System.out.print(ColorText.YELLOW + "Set priority (H/M/L or blank): " + ColorText.RESET);
-        String priority = scanner.nextLine().trim().toUpperCase();
+        String input = scanner.nextLine().trim().toUpperCase();
+        String priority;
+        switch (input) {
+            case "H": priority = "HIGH"; break;
+            case "M": priority = "MED"; break;
+            case "L": priority = "LOW"; break;
+            default: priority = "NONE"; break;
+        }
 
         System.out.print(ColorText.YELLOW + "Enter due date (YYYY-MM-DD or blank): " + ColorText.RESET);
         String dueInput = scanner.nextLine().trim();
-
-        LocalDate dueDate = null;
+        LocalDate due = null;
         if (!dueInput.isEmpty()) {
-            try {
-                dueDate = LocalDate.parse(dueInput);
-            } catch (Exception e) {
-                ColorText.warn("⚠️ Invalid date format. Skipping due date.");
-            }
+            try { due = LocalDate.parse(dueInput); }
+            catch (Exception e) { ColorText.warn("⚠️ Invalid date format. Skipping due date."); }
         }
 
-        String formattedPriority = "";
-        switch (priority) {
-            case "H":
-                formattedPriority = ColorText.RED + "[HIGH]" + ColorText.RESET;
-                break;
-            case "M":
-                formattedPriority = ColorText.YELLOW + "[MED]" + ColorText.RESET;
-                break;
-            case "L":
-                formattedPriority = ColorText.GREEN + "[LOW]" + ColorText.RESET;
-                break;
-            default:
-                formattedPriority = "";
-                break;
-        }
-
-        if (!task.isEmpty()) {
-            if (formattedPriority.isEmpty()) formattedPriority = "[NONE]";
-            String duelabel = (dueDate != null) ? " | Due: " + dueDate.toString() : "";
-            String entry = task + " " + formattedPriority + duelabel + " (added " + timestamp.format(new Date()) + ")";
-
-            tasks.add(entry);
-            addedToday++;
-            saveTasks();
-            sortTasksByPriority();
-            beep();
-            ColorText.success("Task added!");
-            pauseAndClear(scanner);
-        } else {
-            beep();
-            ColorText.warn("You can’t add an empty task!");
-        }
-        backupTasks();
+        Task newTask = new Task(name, priority, due);
+        tasks.add(newTask);
+        addedToday++;
+        Collections.sort(tasks);
+        //saveTasks();
+        beep();
+        ColorText.success("Task added!");
+        pauseAndClear(scanner);
     }
 
     private static void showTasks() {
-        sortTasksByPriority();
+        Collections.sort(tasks);
         if (tasks.isEmpty()) {
             ColorText.warn("🌈 No tasks yet!");
             pauseAndClear(new Scanner(System.in));
             return;
         }
 
-        // --- Table Header ---
+        // --- Table Header (your formatting kept) ---
         ColorText.info("\n📝 Your Tasks:");
-        System.out.printf(ColorText.CYAN + "%-3s %-28s %-14s %-12s%n" + ColorText.RESET,
+        System.out.printf(ColorText.CYAN + "%-3s %-37s %-19s %-12s%n" + ColorText.RESET,
                 "#", "Task", "Priority", "Due Date");
         System.out.println(ColorText.CYAN + "───────────────────────────────────────────────────────────────────────" + ColorText.RESET);
 
         // --- Table Rows ---
         for (int i = 0; i < tasks.size(); i++) {
-            String raw = tasks.get(i);
-            String priority = "—";
-            String due = "—";
+            Task t = tasks.get(i);
+            String priority = t.getPriority();
+            String due = (t.getDue() == null) ? "💤 [NO DUE DATE]" : t.getDue().toString();
 
-            // Extract priority
-            if (raw.contains("[HIGH]")) priority = "[HIGH]";
-            else if (raw.contains("[MED]")) priority = "[MED]";
-            else if (raw.contains("[LOW]")) priority = "[LOW]";
-            else priority = "[NONE]";
-
-            // Extract due date
-            if (raw.contains("Due: ")) {
-                int start = raw.indexOf("Due: ") + 5;
-                int end = raw.indexOf(" ", start);
-                if (end < 0) end = raw.length();
-                due = raw.substring(start, end).trim();
-                if (due.isEmpty()) due = "[NO DUE DATE]";
-            } else {
-                due = "[NO DUE DATE]";
-            }
-            try {
-                if (due.matches("\\d{4}-\\d{2}-\\d{2}")) {
-                    LocalDate d = LocalDate.parse(due);
-                    if (LocalDate.now().isAfter(d)) due = ColorText.RED + due + " ⚠️" + ColorText.RESET;
-                    else if (LocalDate.now().equals(d)) due = ColorText.YELLOW + due + " ⏰" + ColorText.RESET;
-                    else due = ColorText.GREEN + due + ColorText.RESET;
-                } else if (due.equals("[NO DATE]")) {
-                    due = ColorText.GRAY + due + ColorText.RESET;
-                }
-            } catch (Exception ignored) {}
-
-            // Clean task name
-            String taskName = raw
-                    .replaceAll("\\[HIGH\\]|\\[MED\\]|\\[LOW\\]", "")
-                    .replaceAll("\\| Due:.*", "")
-                    .replaceAll("\\(added.*\\)", "")
-                    .trim();
-
-            // Add colors AFTER formatting
+            // --- Color priority like your version ---
             String coloredPriority;
             switch (priority) {
-                case "[HIGH]":
-                    coloredPriority = ColorText.RED + "🔥 " + priority +  ColorText.RESET;
+                case "HIGH":
+                    coloredPriority = ColorText.RED + "🔥 [HIGH]" + ColorText.RESET;
                     break;
-                case "[MED]":
-                    coloredPriority = ColorText.YELLOW + "⚡ " + priority + ColorText.RESET;
+                case "MED":
+                    coloredPriority = ColorText.YELLOW + "⚡ [MED]" + ColorText.RESET;
                     break;
-                case "[LOW]":
-                    coloredPriority = ColorText.GREEN + "🌿 " + priority + ColorText.RESET;
-                    break;
-                case "[NONE]":
-                    coloredPriority = ColorText.GRAY + "💤 " + priority + ColorText.RESET;
+                case "LOW":
+                    coloredPriority = ColorText.GREEN + "🌿 [LOW]" + ColorText.RESET;
                     break;
                 default:
-                    coloredPriority = priority;
+                    coloredPriority = ColorText.GRAY + "💤 [NONE]" + ColorText.RESET;
                     break;
             }
 
+            // --- Highlight due date ---
+            if (t.getDue() != null) {
+                LocalDate d = t.getDue();
+                if (LocalDate.now().isAfter(d)) due = ColorText.RED + due + " ⚠️" + ColorText.RESET;
+                else if (LocalDate.now().equals(d)) due = ColorText.YELLOW + due + " ⏰" + ColorText.RESET;
+                else due = ColorText.GREEN + due + ColorText.RESET;
+            }
 
-        // --- Print each task row with spacing ---
-        System.out.printf(ColorText.BLUE + "%-3d %-37s %-23s %-12s" + ColorText.RESET + "%n",
-                (i + 1), taskName, coloredPriority, due);
+            // --- Print row ---
+            System.out.printf(ColorText.BLUE + "%-3d %-37s %-27s %-12s" + ColorText.RESET + "%n",
+                    (i + 1), t.getName(), coloredPriority, due);
+        }
+
+        long noDate = tasks.stream().filter(t -> t.getDue() == null).count();
+        ColorText.info(String.format("\n📊 %d total | %d without due date | %d added today | %d completed today",
+            tasks.size(), noDate, addedToday, completedToday));
+
+        pauseAndClear(new Scanner(System.in));
     }
-
-    pauseAndClear(new Scanner(System.in));
-    long noDate = tasks.stream().filter(t -> t.contains("[NO DATE]")).count();
-    ColorText.info(String.format("\n📊 %d total | %d without due date | %d added today | %d completed today",
-        tasks.size(), noDate, addedToday, completedToday));
-}
 
     private static void completeTask(Scanner scanner) {
         showTasks();
@@ -185,12 +139,12 @@ public class todo {
         try {
             int index = Integer.parseInt(scanner.nextLine()) - 1;
             if (index >= 0 && index < tasks.size()) {
-                String completed = tasks.remove(index);
+                Task t = tasks.get(index);
+                t.markCompleted();
                 completedToday++;
-                String doneMsg = completed + " ✅ (completed " + timestamp.format(new Date()) + ")";
                 beep();
-                ColorText.success(doneMsg);
-                saveTasks();
+                ColorText.success("✅ Completed: " + t.getName());
+                //saveTasks();
             } else {
                 beep();
                 ColorText.warn("Invalid task number!");
@@ -202,43 +156,24 @@ public class todo {
         pauseAndClear(scanner);
     }
 
-    private static boolean isOverdue(String taskLine) {
-        try {
-            int start = taskLine.indexOf("Due: ") + 5;
-            int end = taskLine.indexOf(" ", start);
-            if (start > 4 && end > start) {
-                String dateStr = taskLine.substring(start, end).trim();
-                LocalDate due = LocalDate.parse(dateStr);
-                return LocalDate.now().isAfter(due);
+    private static void showUpcoming() {
+        ColorText.info("\n📅 Tasks due within 3 days:");
+        boolean found = false;
+        for (Task t : tasks) {
+            LocalDate due = t.getDue();
+            if (due != null && !LocalDate.now().isAfter(due) && !due.isAfter(LocalDate.now().plusDays(3))) {
+                System.out.println(ColorText.YELLOW + "⏰ " + t.getName() + " → " + due + ColorText.RESET);
+                found = true;
             }
-        } catch (Exception ignored) {}
-        return false;
+        }
+
+        if (!found)
+            System.out.println(ColorText.GREEN + "No tasks due soon!" + ColorText.RESET);
+        pauseAndClear(new Scanner(System.in));
     }
 
-    // --- Data Handling ---
-
-    private static void saveTasks() {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_NAME))) {
-            for (String task : tasks) writer.println(task);
-        } catch (IOException e) {
-            beep();
-            ColorText.warn("Error saving tasks: " + e.getMessage());
-        }
-    }
-
-    private static void loadTasks() {
-        File file = new File(FILE_NAME);
-        if (!file.exists()) return;
-
-        try (Scanner fileScanner = new Scanner(file)) {
-            while (fileScanner.hasNextLine()) {
-                tasks.add(fileScanner.nextLine());
-            }
-            ColorText.info("📂 Loaded " + tasks.size() + " saved task(s).");
-            sortTasksByPriority();
-        } catch (IOException e) {
-            ColorText.warn("Could not load previous tasks.");
-        }
+    private static String escapeJson(String s) {
+        return s.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 
     private static void exportMarkdown() {
@@ -249,59 +184,15 @@ public class todo {
                 writer.println("✅ All tasks completed! 🎉");
             } else {
                 writer.println("## Pending Tasks:\n");
-                for (String task : tasks) {
-                    String clean = task.replaceAll("\u001B\\[[;\\d]*m", "");
-                    writer.println("- [ ] " + clean);
+                for (Task t : tasks) {
+                    String box = t.isCompleted() ? "[x]" : "[ ]";
+                    writer.println("- " + box + " " + t.getName() + " (" + t.getPriority() + ")");
                 }
             }
             ColorText.success("🗒️ Exported to tasks.md");
         } catch (IOException e) {
             ColorText.warn("⚠️ Could not export to Markdown.");
-            pauseAndClear(new Scanner(System.in));
         }
-    }
-
-    private static void backupTasks() {
-        File file = new File(FILE_NAME);
-        File backup = new File("tasks_backup_" + System.currentTimeMillis() + ".txt");
-        try (InputStream in = new FileInputStream(file);
-             OutputStream out = new FileOutputStream(backup)) {
-            in.transferTo(out);
-        } catch (IOException e) {
-            ColorText.warn("⚠️ Could not create backup file.");
-        }
-    }
-
-    // --- Sorting Helper ---
-    private static void sortTasksByPriority() {
-        tasks.sort((a, b) -> Integer.compare(priorityValue(b), priorityValue(a))); // HIGH → LOW
-    }
-
-    private static int priorityValue(String t) {
-        if (t.contains("[HIGH]")) return 3;
-        if (t.contains("[MED]")) return 2;
-        if (t.contains("[LOW]")) return 1;
-        return 0; // No priority
-    }
-
-    private static void showUpcoming() {
-        ColorText.info("\n📅 Tasks due within 3 days:");
-        boolean found = false;
-        for (String t : tasks) {
-            if (t.contains("Due: ")) {
-                try {
-                    int start = t.indexOf("Due: ") + 5;
-                    int end = t.indexOf(" ", start);
-                    LocalDate due = LocalDate.parse(t.substring(start, end).trim());
-                    if (!LocalDate.now().isAfter(due) && !due.isAfter(LocalDate.now().plusDays(3))) {
-                        System.out.println(ColorText.YELLOW + "⏰ " + t + ColorText.RESET);
-                        found = true;
-                    }
-                } catch (Exception ignored) {}
-            }
-        }
-        if (!found) System.out.println(ColorText.GREEN + "No tasks due soon!" + ColorText.RESET);
-        pauseAndClear(new Scanner(System.in));
     }
 
     // --- Aesthetic Touches ---
@@ -316,39 +207,30 @@ public class todo {
             "Checking for Y2K bugs... 🧮",
             "Loading system aesthetics... 🌈",
             "Compiling positive energy... ✨",
-            "Booting motivation module... 🚀",
-            "Optimizing focus levels... 🔧"
+            "Booting motivation module... 🚀"
         };
 
-        // Pick 3 random messages
         List<String> shuffled = new ArrayList<>(Arrays.asList(bootMsgs));
         Collections.shuffle(shuffled);
         List<String> chosen = shuffled.subList(0, 4);
 
-        System.out.println(ColorText.PINK + "🔧 Initializing Retro Environment..." + ColorText.RESET);
+        System.out.println(ColorText.BLACK + "🔧 Initializing Retro Environment..." + ColorText.RESET);
 
-        // Build the progress bar
         int totalSteps = 30;
         for (int i = 0; i <= totalSteps; i++) {
             int progress = (i * 100) / totalSteps;
             String bar = "█".repeat(i) + "▒".repeat(totalSteps - i);
-
-            // Always overwrite the *same* progress line
             System.out.print("\r" + ColorText.PINK + "Loading: [" + bar + "] " + progress + "%" + ColorText.RESET);
-
-            try { Thread.sleep(100); } catch (InterruptedException ignored) {}
+            try { Thread.sleep(90); } catch (InterruptedException ignored) {}
         }
 
-        // After bar finishes, print all messages cleanly below it
-        System.out.println(); // move below the bar
+        System.out.println();
         for (String msg : chosen) {
-            System.out.println(ColorText.PINK + msg + ColorText.RESET);
+            System.out.println(ColorText.BLACK + msg + ColorText.RESET);
             try { Thread.sleep(600); } catch (InterruptedException ignored) {}
         }
-
         System.out.println("\n" + ColorText.CYAN + "✨ Ready to roll! ✨" + ColorText.RESET);
     }
-
 
     private static void showQuote() {
         String[] quotes = {
@@ -366,7 +248,6 @@ public class todo {
 
     private static void exitApp() {
         beep();
-        backupTasks();
         ColorText.line();
         ColorText.success("💾 Exiting… your tasks are saved!");
         ColorText.info("📅 Today’s Stats: Added " + addedToday + " | Completed " + completedToday);
@@ -378,13 +259,12 @@ public class todo {
         System.out.flush();
     }
 
-
-// --- Utility Helpers ---
+    // --- Utility Helpers ---
 
     private static void pauseAndClear(Scanner scanner) {
         System.out.println("\nPress Enter to return to menu...");
-        scanner.nextLine();           // wait for user
-        clearScreen();                // clear terminal
+        scanner.nextLine();
+        clearScreen();
     }
 
     private static void clearScreen() {

@@ -8,6 +8,8 @@ public class ColorText {
     public static final String PURPLE = "\u001B[35m";
     public static final String PINK = "\u001B[95m";
     public static final String GRAY = "\u001B[90m";
+    public static final String WHITE = "\u001B[97m";
+    public static final String BLACK = "\u001B[30m";
     // Add more colors as needed
     // Utility methods for colored messages
 
