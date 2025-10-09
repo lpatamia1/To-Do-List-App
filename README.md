@@ -1,7 +1,9 @@
 ## To-Do (Java Console App) 🧮
 Terminal-style to-do list that feels like it came straight from a 90s PC.
 Organize your day in a minimalist way — no mouse, no distractions, just text and charm.
+
 ![Tests](https://github.com/lpatamia1/To-Do-List-App/actions/workflows/test.yml/badge.svg)
+![Coverage](https://img.shields.io/badge/Coverage-85%25-brightgreen?style=flat-square)
 
 ## Features
 - Add and remove tasks with simple numbered prompts  
@@ -13,6 +15,13 @@ Organize your day in a minimalist way — no mouse, no distractions, just text a
 - Lightweight JSON serialization with **Gson**
 - Automatic backup creation  
 - Unit-tested with **JUnit 5**
+
+## 🧰 Tech Stack
+- **Language:** Java 21  
+- **Build Tool:** Make  
+- **Libraries:** Gson, JUnit 5, JaCoCo  
+- **Testing:** Unit + Integration Tests  
+- **CI/CD:** GitHub Actions (Java CI workflow)
 
 ## How It Works
 You interact with the program through the command line:

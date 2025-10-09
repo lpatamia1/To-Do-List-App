@@ -27,3 +27,11 @@ coverage:
 	$(JC) -cp .:lib/gson-2.10.1.jar:lib/junit-platform-console-standalone-1.10.2.jar -d bin src/*.java tests/*.java
 	$(JVM) -javaagent:lib/jacocoagent.jar=destfile=jacoco.exec -jar lib/junit-platform-console-standalone-1.10.2.jar -cp .:lib/gson-2.10.1.jar:bin --scan-classpath
 	@echo "\n🧾 Coverage data saved to jacoco.exec"
+
+htmlreport:
+	java -jar lib/jacococli.jar report jacoco.exec \
+	  --classfiles bin \
+	  --sourcefiles src \
+	  --html coverage-report \
+	  --name "To-Do List App Coverage"
+	@echo "\n📊 HTML coverage report generated at coverage-report/index.html"

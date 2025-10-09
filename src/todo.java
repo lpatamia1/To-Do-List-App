@@ -413,18 +413,9 @@ public class todo {
             return;
         }
 
-        long totalActive = tasks.stream().filter(t -> !t.isCompleted()).count();
-        long dueSoon = tasks.stream()
-            .filter(t -> !t.isCompleted() &&
-                        t.getDue() != null &&
-                        !LocalDate.now().isAfter(t.getDue()) &&
-                        !t.getDue().isAfter(LocalDate.now().plusDays(3)))
-            .count();
-        long overdue = tasks.stream()
-            .filter(t -> !t.isCompleted() &&
-                        t.getDue() != null &&
-                        LocalDate.now().isAfter(t.getDue()))
-            .count();
+        long totalActive = TodoLogic.countActive(tasks);
+        long dueSoon = TodoLogic.countDueSoon(tasks);
+        long overdue = TodoLogic.countOverdue(tasks);
 
         ColorText.line();
         ColorText.info(String.format(

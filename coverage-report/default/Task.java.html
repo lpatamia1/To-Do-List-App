@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Task.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">To-Do List App Coverage</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">Task.java</span></div><h1>Task.java</h1><pre class="source lang-java linenums">import java.time.LocalDate;
+
+public class Task implements Comparable&lt;Task&gt; {
+    private String name;
+    private String priority;
+    private LocalDate due;
+    private boolean completed;
+
+<span class="fc" id="L9">    public Task(String name, String priority, LocalDate due) {</span>
+<span class="fc" id="L10">        this.name = name;</span>
+<span class="pc bpc" id="L11" title="2 of 4 branches missed.">        this.priority = (priority == null || priority.isEmpty()) ? &quot;NONE&quot; : priority;</span>
+<span class="fc" id="L12">        this.due = due;</span>
+<span class="fc" id="L13">        this.completed = false;</span>
+<span class="fc" id="L14">    }</span>
+
+<span class="fc" id="L16">    public String getName() { return name; }</span>
+<span class="fc" id="L17">    public String getPriority() { return priority; }</span>
+<span class="fc" id="L18">    public LocalDate getDue() { return due; }</span>
+<span class="fc" id="L19">    public boolean isCompleted() { return completed; }</span>
+
+<span class="fc" id="L21">    public void markCompleted() { this.completed = true; }</span>
+
+    @Override
+    public int compareTo(Task other) {
+<span class="fc" id="L25">        return Integer.compare(priorityValue(other.priority), priorityValue(this.priority));</span>
+    }
+
+    private int priorityValue(String p) {
+<span class="pc bpc" id="L29" title="1 of 4 branches missed.">        switch (p) {</span>
+<span class="fc" id="L30">            case &quot;HIGH&quot;: return 3;</span>
+<span class="fc" id="L31">            case &quot;MED&quot;: return 2;</span>
+<span class="fc" id="L32">            case &quot;LOW&quot;: return 1;</span>
+<span class="nc" id="L33">            default: return 0;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
