@@ -13,6 +13,7 @@ public class todo {
     public static void main(String[] args) {
         retroBoot();
         loadTasksJSON();
+        showStartupSummary();
         Scanner scanner = new Scanner(System.in);
         ColorText.banner("✨ Retro To-Do List ✨");
         showQuote();
@@ -332,6 +333,42 @@ public class todo {
         } catch (Exception e) {
             ColorText.warn("⚠️ Could not load tasks.json: " + e.getMessage());
         }
+    }
+    private static void showStartupSummary() {
+        if (tasks.isEmpty()) {
+            ColorText.info("\n📭 No tasks yet. Let's add your first one!");
+            return;
+        }
+
+        long totalActive = tasks.stream().filter(t -> !t.isCompleted()).count();
+        long dueSoon = tasks.stream()
+            .filter(t -> !t.isCompleted() &&
+                        t.getDue() != null &&
+                        !LocalDate.now().isAfter(t.getDue()) &&
+                        !t.getDue().isAfter(LocalDate.now().plusDays(3)))
+            .count();
+        long overdue = tasks.stream()
+            .filter(t -> !t.isCompleted() &&
+                        t.getDue() != null &&
+                        LocalDate.now().isAfter(t.getDue()))
+            .count();
+
+        ColorText.line();
+        ColorText.info(String.format(
+            "📅 You have %d active task%s (%d due soon, %d overdue)",
+            totalActive,
+            totalActive == 1 ? "" : "s",
+            dueSoon,
+            overdue
+        ));
+
+        // Optional: motivational touch
+        if (overdue > 0)
+            ColorText.warn("⚠️  Time to catch up!");
+        else if (dueSoon > 0)
+            ColorText.success("🌟 You're on top of it!");
+        else
+            ColorText.success("✅ All caught up!");
     }
 
     /** Helper to escape quotes for JSON */
