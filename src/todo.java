@@ -16,7 +16,7 @@ public class todo {
         loadTasksJSON();
         showStartupSummary();
         Scanner scanner = new Scanner(System.in);
-        ColorText.banner("✨ Retro To-Do List ✨");
+        ColorText.banner("      🌸 Retro To-Do List 🌸");
         showQuote();
 
         while (true) {
@@ -246,13 +246,30 @@ public class todo {
 
         System.out.println(ColorText.BLACK + "🔧 Initializing Retro Environment..." + ColorText.RESET);
 
-        int totalSteps = 30;
+        int totalSteps = 40;
         for (int i = 0; i <= totalSteps; i++) {
             int progress = (i * 100) / totalSteps;
-            String bar = "█".repeat(i) + "▒".repeat(totalSteps - i);
-            System.out.print("\r" + ColorText.PINK + "Loading: [" + bar + "] " + progress + "%" + ColorText.RESET);
-            try { Thread.sleep(90); } catch (InterruptedException ignored) {}
+
+            StringBuilder bar = new StringBuilder();
+            for (int j = 0; j < i; j++) {
+                double ratio = (double) j / totalSteps;
+
+                // 🌈 Proper red-start rainbow gradient using rotated sine waves
+                double frequency = 1.7 * Math.PI;
+
+                // 🌈 Correct alignment: starts at pure red
+                int r = (int)(Math.sin(frequency * ratio + Math.PI / 2) * 127 + 128);         // red peaks first
+                int g = (int)(Math.sin(frequency * ratio - Math.PI / 6) * 127 + 128);         // green lags slightly
+                int b = (int)(Math.sin(frequency * ratio - 5 * Math.PI / 6) * 127 + 128);     // blue trails farthest
+
+                bar.append(String.format("\033[38;2;%d;%d;%dm█\033[0m", r, g, b));
+            }
+            for (int j = i; j < totalSteps; j++) bar.append("▒");
+
+            System.out.printf("\rLoading: [%s] %3d%%", bar, progress);
+            try { Thread.sleep(70); } catch (InterruptedException ignored) {}
         }
+        System.out.println("\033[0m"); // reset color
 
         System.out.println();
         for (String msg : chosen) {
@@ -266,11 +283,11 @@ public class todo {
         String[] quotes = {
             "Keep calm and code on 💻",
             "Progress, not perfection 🌈",
-            "Retro vibes only ✨",
             "Every bug teaches you something 🐛",
             "One task at a time 🪩",
             "Stay groovy and productive! 🎸",
-            "You are doing great! 🌟"
+            "You are doing great! 🌟",
+            "Make today ridiculously amazing! 🚀",
         };
         Random rand = new Random();
         System.out.println(ColorText.CYAN + "💬 " + quotes[rand.nextInt(quotes.length)] + ColorText.RESET);
