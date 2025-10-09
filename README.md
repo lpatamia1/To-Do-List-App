@@ -1,6 +1,7 @@
 ## To-Do (Java Console App) 🧮
 Terminal-style to-do list that feels like it came straight from a 90s PC.
 Organize your day in a minimalist way — no mouse, no distractions, just text and charm.
+![Tests](https://github.com/lpatamia1/To-Do-List-App/actions/workflows/test.yml/badge.svg)
 
 ## Features
 - Add and remove tasks with simple numbered prompts  
