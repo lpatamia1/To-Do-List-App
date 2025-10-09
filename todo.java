@@ -2,6 +2,7 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.time.LocalDate;
+import com.google.gson.*;
 
 public class todo {
     private static final List<Task> tasks = new ArrayList<>();
@@ -18,7 +19,7 @@ public class todo {
 
         while (true) {
             ColorText.line();
-            System.out.println("1️⃣  Add Task\n2️⃣  View Tasks\n3️⃣  Mark Complete\n4️⃣  Show Upcoming\n5️⃣  Export Markdown\n6️⃣  Exit");
+            System.out.println("1️⃣  Add Task\n2️⃣  View Tasks\n3️⃣  Mark Complete\n4️⃣  Show Upcoming\n5️⃣  Export Markdown\n6️⃣  View Completed\n7️⃣  Exit");
             System.out.print(ColorText.CYAN + "Choose: " + ColorText.RESET);
             String choice = scanner.nextLine().trim();
 
@@ -28,7 +29,8 @@ public class todo {
                 case "3": completeTask(scanner); break;
                 case "4": showUpcoming(); break;
                 case "5": exportMarkdown(); break;
-                case "6": exitApp(); scanner.close(); return;
+                case "6": showCompleted(); break;
+                case "7": exitApp(); scanner.close(); return;
                 default: beep(); ColorText.warn("❓ Invalid option. Try again!");
             }
         }
@@ -69,6 +71,7 @@ public class todo {
         Collections.sort(tasks);
         beep();
         ColorText.success("Task added!");
+        saveTasksJSON();
         pauseAndClear(scanner);
     }
 
@@ -144,6 +147,7 @@ public class todo {
                 completedToday++;
                 beep();
                 ColorText.success("✅ Completed: " + t.getName());
+                saveTasksJSON();
             } else {
                 beep();
                 ColorText.warn("Invalid task number!");
@@ -153,6 +157,23 @@ public class todo {
             ColorText.warn("Please enter a valid number.");
         }
         pauseAndClear(scanner);
+    }
+
+    private static void showCompleted() {
+        ColorText.info("\n✅ Completed Tasks:");
+        boolean found = false;
+
+        for (Task t : tasks) {
+            if (t.isCompleted()) {
+                System.out.println(ColorText.GREEN + "✔️ " + t.getName() + ColorText.RESET);
+                found = true;
+            }
+        }
+
+        if (!found)
+            System.out.println(ColorText.YELLOW + "No completed tasks yet!" + ColorText.RESET);
+
+        pauseAndClear(new Scanner(System.in));
     }
 
     private static void showUpcoming() {
@@ -286,73 +307,32 @@ public class todo {
 
     /** Save all tasks to a JSON file */
     private static void saveTasksJSON() {
-        try (PrintWriter out = new PrintWriter(new FileWriter(JSON_FILE))) {
-            out.println("[");
-            for (int i = 0; i < tasks.size(); i++) {
-                Task t = tasks.get(i);
-                out.print("  {");
-                out.printf("\"name\":\"%s\", ", escapeJson(t.getName()));
-                out.printf("\"priority\":\"%s\", ", t.getPriority());
-                out.printf("\"completed\":%s, ", t.isCompleted());
-                out.printf("\"due\":%s", (t.getDue() == null ? "null" : "\"" + t.getDue() + "\""));
-                out.print("}");
-                if (i < tasks.size() - 1) out.println(",");
-                else out.println();
-            }
-            out.println("]");
+        try (Writer writer = new FileWriter(JSON_FILE)) {
+            Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .setPrettyPrinting()
+                .create();
+            gson.toJson(tasks, writer);
             ColorText.info("Tasks saved to tasks.json");
         } catch (IOException e) {
             ColorText.warn("⚠️ Could not save tasks.json: " + e.getMessage());
         }
     }
 
-    /** Load tasks back from the JSON file if it exists */
     private static void loadTasksJSON() {
-    File file = new File(JSON_FILE);
-    if (!file.exists()) return;
-
-    try {
-        StringBuilder sb = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = br.readLine()) != null) sb.append(line.trim());
+        File file = new File(JSON_FILE);
+        if (!file.exists()) return;
+        try (Reader reader = new FileReader(file)) {
+            Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+            .create();
+            Task[] loaded = gson.fromJson(reader, Task[].class);
+            if (loaded != null) tasks.addAll(Arrays.asList(loaded));
+            ColorText.success("📂 Loaded " + tasks.size() + " task(s) from tasks.json");
+        } catch (Exception e) {
+            ColorText.warn("⚠️ Could not load tasks.json: " + e.getMessage());
         }
-
-        String json = sb.toString();
-        if (!json.startsWith("[") || !json.endsWith("]")) return;
-        json = json.substring(1, json.length() - 1).trim(); // remove [ and ]
-
-        // Split only on the boundary between objects
-        String[] objects = json.split("(?<=\\})\\s*,\\s*(?=\\{)");
-        for (String obj : objects) {
-            obj = obj.replaceAll("[{}\"]", "");
-            Map<String, String> map = new HashMap<>();
-
-            for (String part : obj.split(",")) {
-                String[] kv = part.split(":", 2);
-                if (kv.length == 2) map.put(kv[0].trim(), kv[1].trim());
-            }
-
-            String name = map.getOrDefault("name", "Untitled");
-            String priority = map.getOrDefault("priority", "NONE");
-            boolean completed = Boolean.parseBoolean(map.getOrDefault("completed", "false"));
-
-            LocalDate due = null;
-            String dueRaw = map.getOrDefault("due", "");
-            if (!dueRaw.isEmpty() && !"null".equalsIgnoreCase(dueRaw))
-                due = LocalDate.parse(dueRaw);
-
-            Task t = new Task(name, priority, due);
-            if (completed) t.markCompleted();
-            tasks.add(t);
-        }
-
-        Collections.sort(tasks);
-        ColorText.success("📂 Loaded " + tasks.size() + " task(s) from tasks.json");
-    } catch (Exception e) {
-        ColorText.warn("⚠️ Could not load tasks.json: " + e.getMessage());
     }
-}
 
     /** Helper to escape quotes for JSON */
     private static String escapeJson(String s) {
