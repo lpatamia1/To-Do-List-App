@@ -6,6 +6,11 @@
     "completed": true
   },
   {
+    "name": "Polish essay",
+    "priority": "HIGH",
+    "completed": false
+  },
+  {
     "name": "Read",
     "priority": "MED",
     "due": "2025-10-09",
@@ -24,6 +29,11 @@
   },
   {
     "name": "Eat",
+    "priority": "NONE",
+    "completed": false
+  },
+  {
+    "name": "Fish",
     "priority": "NONE",
     "completed": false
   }

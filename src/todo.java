@@ -9,6 +9,7 @@ public class todo {
     private static final SimpleDateFormat timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static int addedToday = 0;
     private static int completedToday = 0;
+    private static final java.time.LocalDateTime startTime = java.time.LocalDateTime.now();
 
     public static void main(String[] args) {
         retroBoot();
@@ -166,7 +167,7 @@ public class todo {
 
         for (Task t : tasks) {
             if (t.isCompleted()) {
-                System.out.println(ColorText.GREEN + "✔️ " + t.getName() + ColorText.RESET);
+                System.out.println(ColorText.GREEN + "✔️  " + t.getName() + ColorText.RESET);
                 found = true;
             }
         }
@@ -187,7 +188,7 @@ public class todo {
 
                 String emoji;
                 if (due.equals(LocalDate.now()))
-                    emoji = ColorText.RED + "⚠️ " + ColorText.RESET; // Due today
+                    emoji = ColorText.RED + "⚠️  " + ColorText.RESET; // Due today
                 else if (due.equals(LocalDate.now().plusDays(1)))
                     emoji = ColorText.YELLOW + "⏰ " + ColorText.RESET; // Due tomorrow
                 else
@@ -279,12 +280,25 @@ public class todo {
         ColorText.line();
         ColorText.success("Exiting… your tasks are saved!");
         ColorText.info("📅 Today’s Stats: Added " + addedToday + " | Completed " + completedToday);
+        
         saveTasksJSON();
         exportMarkdown();
 
         ColorText.info("📂 Serialized " + tasks.size() + " tasks to tasks.json");
-        ColorText.success("✨ Goodbye! Stay groovy and productive! 🎸");
     
+        java.time.Duration session = java.time.Duration.between(startTime, java.time.LocalDateTime.now());
+        long minutes = session.toMinutes();
+        long seconds = session.minusMinutes(minutes).getSeconds();
+
+        if (minutes == 0 && seconds < 10) {
+            ColorText.info("⏱️  Session Duration: " + seconds + " seconds");
+        }
+        else {
+            ColorText.info(String.format("⏱️  Session Duration: %d minutes, %d seconds", minutes, seconds));
+        }
+        
+        ColorText.success("✨ Goodbye! Stay groovy and productive! 🎸");
+
         try {
             Thread.sleep(400);
             System.out.print("\n" + ColorText.PINK + "             •beep•" + ColorText.RESET + "\n");
