@@ -153,3 +153,8 @@ Choose: 7
 - Built with **modular Java classes and clear separation of logic/UI**
 - Includes **CI pipeline** on GitHub Actions (auto-test every commit)
 - Designed and tested in **GitHub Codespaces**
+
+## Lessons Learned
+Early versions broke silently after adding new features — tests caught those regressions instantly once CI was added.What started as a simple text to-do list evolved into a polished, maintainable project through continuous iteration and testing.
+Watching GitHub automatically compile, test, and report coverage builds real trust in your codebase.
+Combining retro design with modern tooling (JUnit, JaCoCo, GitHub Actions) creates a bridge between nostalgia and reliability — fun and functional.

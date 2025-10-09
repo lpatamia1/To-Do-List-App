@@ -1,8 +1,3 @@
-// Makefile for building, running, testing, and generating coverage reports
-// for the Retro To-Do List application
-// Uses javac, java, JUnit 5, and JaCoCo
-// Important: Do not remove any variables or targets, they are all used
-
 JFLAGS = -cp .:lib/gson-2.10.1.jar
 JC = javac
 JVM = java
