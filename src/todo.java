@@ -282,6 +282,9 @@ public class todo {
         ColorText.info("📅 Today’s Stats: Added " + addedToday + " | Completed " + completedToday);
         saveTasksJSON();
         exportMarkdown();
+
+        ColorText.info("📂 Serialized " + tasks.size() + " tasks to tasks.json");
+        ColorText.success("✨ Goodbye! Stay groovy and productive! 🎸");
     }
 
     private static void beep() {

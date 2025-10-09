@@ -1,5 +1,11 @@
 [
   {
+    "name": "Finish presentation slides",
+    "priority": "HIGH",
+    "due": "2025-10-09",
+    "completed": true
+  },
+  {
     "name": "Read",
     "priority": "MED",
     "due": "2025-10-09",

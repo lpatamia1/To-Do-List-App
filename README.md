@@ -9,8 +9,9 @@ Organize your day in a minimalist way — no mouse, no distractions, just text a
 - Terminal beeps and pastel color text for extra flair  
 - Optional Markdown export (`tasks.md`)
 - Daily stats tracking: tasks added and completed
-- Lightweight JSON serialization (manual parser, no external libraries)
+- Lightweight JSON serialization with **Gson**
 - Automatic backup creation  
+- Unit-tested with **JUnit 5**
 
 ## How It Works
 You interact with the program through the command line:
@@ -33,31 +34,54 @@ make
 javac -cp .:lib/gson-2.10.1.jar todo.java Task.java ColorText.java LocalDateAdapter.java
 java  -cp .:lib/gson-2.10.1.jar todo
 ```
+3. Runnable JAR
+```bash
+make package
+java -jar todo.jar
+```
+
 ## Example Output
 
 ```bash
 🔧 Initializing Retro Environment...
 Loading: [██████████████████████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] 100%
 Spinning floppy drive... 💾
+Checking for Y2K bugs... 🧮
+Compiling positive energy... ✨
 
-✨ Retro To-Do List ✨
+✨ Ready to roll! ✨
+📂 Loaded 4 task(s) from tasks.json
+────────────────────────────────────────────
+📅 You have 2 active tasks (1 due soon, 0 overdue)
+🌟 You're on top of it!
+╔══════════════════════════════════════╗
+  ✨ Retro To-Do List ✨
+╚══════════════════════════════════════╝
 💬 One task at a time 🪩
-
-📂 Loaded 2 saved task(s).
-────────────────────────────
+────────────────────────────────────────────
 1️⃣  Add Task
 2️⃣  View Tasks
 3️⃣  Mark Complete
 4️⃣  Show Upcoming
 5️⃣  Export Markdown
-6️⃣  Exit
-────────────────────────────
+6️⃣  View Completed
+7️⃣  Exit
 Choose: 1
 Enter task: Finish presentation slides
 Set priority (H/M/L or blank): H
 Enter due date (YYYY-MM-DD or blank): 2025-10-09
-✅ Task added!
-─────────────────────────────────────────────
+Task added!
+Task saved to tasks.json
+
+Press Enter to return to menu...
+────────────────────────────────────────────
+1️⃣  Add Task
+2️⃣  View Tasks
+3️⃣  Mark Complete
+4️⃣  Show Upcoming
+5️⃣  Export Markdown
+6️⃣  View Completed
+7️⃣  Exit
 Choose: 2
 📝 Your Tasks:
 #   Task                                   Priority             Due Date
@@ -66,14 +90,33 @@ Choose: 2
 2   Clean workspace                        🌿 [LOW]              💤 [NO DUE DATE]
 
 📊 2 total | 1 without due date | 1 added today | 0 completed today
-─────────────────────────────────────────────
-Press Enter to return to menu...
 
+Press Enter to return to menu...
+────────────────────────────────────────────
+1️⃣  Add Task
+2️⃣  View Tasks
+3️⃣  Mark Complete
+4️⃣  Show Upcoming
+5️⃣  Export Markdown
+6️⃣  View Completed
+7️⃣  Exit
 Choose: 3
+
+Press Enter to return to menu...
 Enter number to complete: 1
 ✅ Completed: Finish presentation slides
-─────────────────────────────────────────────
-Choose: 6
+Tasks saved to tasks.json
+
+Press enter to return to menu...
+────────────────────────────────────────────
+1️⃣  Add Task
+2️⃣  View Tasks
+3️⃣  Mark Complete
+4️⃣  Show Upcoming
+5️⃣  Export Markdown
+6️⃣  View Completed
+7️⃣  Exit
+Choose: 7
 💾 Exiting… your tasks are saved!
 📅 Today’s Stats: Added 1 | Completed 1
 🗒️ Exported to tasks.md
