@@ -285,11 +285,26 @@ public class todo {
 
         ColorText.info("📂 Serialized " + tasks.size() + " tasks to tasks.json");
         ColorText.success("✨ Goodbye! Stay groovy and productive! 🎸");
+    
+        try {
+            Thread.sleep(1500);
+            beep();
+        } catch (InterruptedException ignored) {}
     }
 
     private static void beep() {
-        System.out.print("\007");
-        System.out.flush();
+        try {
+            // Try a real system beep first
+            java.awt.Toolkit.getDefaultToolkit().beep();
+
+            // Also show a small visual ping
+            System.out.print(ColorText.PINK + "•beep•\n" + ColorText.RESET);
+            System.out.flush();
+        } catch (Exception e) {
+            // Fallback visual + BEL character if sound system unavailable
+            System.out.print("\007" + ColorText.PINK + "•beep•" + ColorText.RESET);
+            System.out.flush();
+        }
     }
 
     // --- Utility Helpers ---
