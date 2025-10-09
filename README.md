@@ -145,7 +145,6 @@ Choose: 7
 ## Bonus 
 - Exports tasks to `tasks.md` for easy sharing or GitHub tracking
 - Shows a random motivational quote each launch
-- Plays terminal beeps for nostalgic feedback
 - Keeps count of tasks added and completed today
 
 ## Development Highlights
