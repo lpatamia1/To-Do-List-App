@@ -20,23 +20,19 @@ You interact with the program through the command line:
 3. Mark complete
 4. Show upcoming
 5. Export Markdown
-6. Exit
+6. View Completed
+7. Exit
 ```
 ## Setup & Run 
-1. Save the code as:
+1. Using Makefile
 ```bash
-todo.java
-ColorText.java
-Task.java
+make
 ```
-
-2. Compile and run:
+2. Manual
 ```bash
-javac ColorText.java todo.java Task.java
-java todo
+javac -cp .:lib/gson-2.10.1.jar todo.java Task.java ColorText.java LocalDateAdapter.java
+java  -cp .:lib/gson-2.10.1.jar todo
 ```
-3. Follow the prompts and enjoy!
----
 ## Example Output
 
 ```bash
