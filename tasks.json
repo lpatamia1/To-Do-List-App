@@ -1,3 +1,8 @@
+## Note: This is a JSON file containing an array of task objects for a to-do list application.
+## Each task has a name, priority, optional due date, and completion status.
+## Priority can be "HIGH", "MEDIUM", or "LOW".
+## Due date, if present, should be in "YYYY-MM-DD" format.
+
 [
   {
     "name": "Eat",
@@ -16,3 +21,4 @@
     "completed": false
   }
 ]
+
