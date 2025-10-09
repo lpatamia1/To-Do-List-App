@@ -1,7 +1,9 @@
 # 📝 Retro To-Do List
-_Updated: 2025-10-08 10:49:20_
+_Updated: 2025-10-09 05:19:05_
 
 ## Pending Tasks:
 
-- [ ] Eat (LOW)
-- [ ] Read (LOW)
+- [ ] Read (MED)
+- [ ] Sleep (LOW)
+- [x] Untitled (NONE)
+- [ ] Eat (NONE)

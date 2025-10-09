@@ -11,7 +11,6 @@ public class todo {
 
     public static void main(String[] args) {
         retroBoot();
-        saveTasksJSON(); // Ensure tasks are saved on startup
         loadTasksJSON();
         Scanner scanner = new Scanner(System.in);
         ColorText.banner("✨ Retro To-Do List ✨");
@@ -83,13 +82,15 @@ public class todo {
 
         // --- Table Header (your formatting kept) ---
         ColorText.info("\n📝 Your Tasks:");
-        System.out.printf(ColorText.CYAN + "%-3s %-37s %-19s %-12s%n" + ColorText.RESET,
+        System.out.printf(ColorText.CYAN + "%-3s %-37s %-18s %-12s%n" + ColorText.RESET,
                 "#", "Task", "Priority", "Due Date");
         System.out.println(ColorText.CYAN + "───────────────────────────────────────────────────────────────────────" + ColorText.RESET);
 
         // --- Table Rows ---
         for (int i = 0; i < tasks.size(); i++) {
             Task t = tasks.get(i);
+            if (t.isCompleted()) continue;
+
             String priority = t.getPriority();
             String due = (t.getDue() == null) ? "💤 [NO DUE DATE]" : t.getDue().toString();
 
@@ -119,7 +120,7 @@ public class todo {
             }
 
             // --- Print row ---
-            System.out.printf(ColorText.BLUE + "%-3d %-37s %-27s %-12s" + ColorText.RESET + "%n",
+            System.out.printf(ColorText.BLUE + "%-3d %-37s %-26s %-12s" + ColorText.RESET + "%n",
                     (i + 1), t.getName(), coloredPriority, due);
         }
 
@@ -157,16 +158,28 @@ public class todo {
     private static void showUpcoming() {
         ColorText.info("\n📅 Tasks due within 3 days:");
         boolean found = false;
+
         for (Task t : tasks) {
             LocalDate due = t.getDue();
             if (due != null && !LocalDate.now().isAfter(due) && !due.isAfter(LocalDate.now().plusDays(3))) {
-                System.out.println(ColorText.YELLOW + "⏰ " + t.getName() + " → " + due + ColorText.RESET);
+
+                String emoji;
+                if (due.equals(LocalDate.now()))
+                    emoji = ColorText.RED + "⚠️ " + ColorText.RESET; // Due today
+                else if (due.equals(LocalDate.now().plusDays(1)))
+                    emoji = ColorText.YELLOW + "⏰ " + ColorText.RESET; // Due tomorrow
+                else
+                    emoji = ColorText.GREEN + "🌿 " + ColorText.RESET; // Due in 2-3 days
+
+                // ✅ Now prints correctly, emoji appears before the task name
+                System.out.println(emoji + t.getName() + " → " + ColorText.CYAN + due + ColorText.RESET);
                 found = true;
             }
         }
 
         if (!found)
             System.out.println(ColorText.GREEN + "No tasks due soon!" + ColorText.RESET);
+
         pauseAndClear(new Scanner(System.in));
     }
 
@@ -295,46 +308,51 @@ public class todo {
 
     /** Load tasks back from the JSON file if it exists */
     private static void loadTasksJSON() {
-        File file = new File(JSON_FILE);
-        if (!file.exists()) return;
+    File file = new File(JSON_FILE);
+    if (!file.exists()) return;
 
-        try (Scanner reader = new Scanner(file)) {
-            StringBuilder json = new StringBuilder();
-            while (reader.hasNextLine()) json.append(reader.nextLine().trim());
-            String content = json.toString();
-
-            // Parse manually (since we're not using a JSON library)
-            String[] objects = content.split("\\},\\s*\\{");
-            for (String obj : objects) {
-                String cleaned = obj.replaceAll("[\\[\\]{}\"]", "").trim();
-                if (cleaned.isEmpty()) continue;
-
-                Map<String, String> map = new HashMap<>();
-                for (String part : cleaned.split(",")) {
-                    String[] kv = part.split(":", 2);
-                    if (kv.length == 2) map.put(kv[0].trim(), kv[1].trim());
-                }
-
-                String name = map.getOrDefault("name", "Untitled");
-                String priority = map.getOrDefault("priority", "NONE");
-                LocalDate due = null;
-                String dueRaw = map.getOrDefault("due", "").replace("\"", "").trim();
-                if (!dueRaw.isEmpty() && !"null".equalsIgnoreCase(dueRaw) && !"none".equalsIgnoreCase(dueRaw))
-                    due = LocalDate.parse(dueRaw);
-                else
-                    due = null;
-                Task t = new Task(name, priority, due);
-                if ("true".equalsIgnoreCase(map.getOrDefault("completed", "false")))
-                    t.markCompleted();
-
-                tasks.add(t);
-            }
-            Collections.sort(tasks);
-            ColorText.success("📂 Loaded " + tasks.size() + " task(s) from tasks.json");
-        } catch (Exception e) {
-            ColorText.warn("⚠️ Could not load tasks.json: " + e.getMessage());
+    try {
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) sb.append(line.trim());
         }
+
+        String json = sb.toString();
+        if (!json.startsWith("[") || !json.endsWith("]")) return;
+        json = json.substring(1, json.length() - 1).trim(); // remove [ and ]
+
+        // Split only on the boundary between objects
+        String[] objects = json.split("(?<=\\})\\s*,\\s*(?=\\{)");
+        for (String obj : objects) {
+            obj = obj.replaceAll("[{}\"]", "");
+            Map<String, String> map = new HashMap<>();
+
+            for (String part : obj.split(",")) {
+                String[] kv = part.split(":", 2);
+                if (kv.length == 2) map.put(kv[0].trim(), kv[1].trim());
+            }
+
+            String name = map.getOrDefault("name", "Untitled");
+            String priority = map.getOrDefault("priority", "NONE");
+            boolean completed = Boolean.parseBoolean(map.getOrDefault("completed", "false"));
+
+            LocalDate due = null;
+            String dueRaw = map.getOrDefault("due", "");
+            if (!dueRaw.isEmpty() && !"null".equalsIgnoreCase(dueRaw))
+                due = LocalDate.parse(dueRaw);
+
+            Task t = new Task(name, priority, due);
+            if (completed) t.markCompleted();
+            tasks.add(t);
+        }
+
+        Collections.sort(tasks);
+        ColorText.success("📂 Loaded " + tasks.size() + " task(s) from tasks.json");
+    } catch (Exception e) {
+        ColorText.warn("⚠️ Could not load tasks.json: " + e.getMessage());
     }
+}
 
     /** Helper to escape quotes for JSON */
     private static String escapeJson(String s) {

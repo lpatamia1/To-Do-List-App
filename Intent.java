@@ -1,3 +1,0 @@
-public enum Intent {
-    ADD, VIEW, COMPLETE, SHOW_UPCOMING, EXPORT, EXIT, HELP, UNKNOWN
-}
