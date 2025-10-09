@@ -16,7 +16,6 @@ Organize your day in a minimalist way — no mouse, no distractions, just text a
 - Add and remove tasks with simple numbered prompts  
 - View your current task list anytime  
 - Automatic JSON persistence (`tasks.json`) — your data survives restarts- Timestamp new and completed items  
-- Terminal beeps and pastel color text for extra flair  
 - Optional Markdown export (`tasks.md`)
 - Daily stats tracking: tasks added and completed
 - Lightweight JSON serialization with **Gson**
