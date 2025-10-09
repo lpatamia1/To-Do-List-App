@@ -276,7 +276,6 @@ public class todo {
     }
 
     private static void exitApp() {
-        beep();
         ColorText.line();
         ColorText.success("Exiting… your tasks are saved!");
         ColorText.info("📅 Today’s Stats: Added " + addedToday + " | Completed " + completedToday);
@@ -287,24 +286,50 @@ public class todo {
         ColorText.success("✨ Goodbye! Stay groovy and productive! 🎸");
     
         try {
-            Thread.sleep(1500);
-            beep();
+            Thread.sleep(400);
+            System.out.print("\n" + ColorText.PINK + "             •beep•" + ColorText.RESET + "\n");
+            java.awt.Toolkit.getDefaultToolkit().beep();
+            System.out.flush();
+            Thread.sleep(600);
+            fadeOut();
         } catch (InterruptedException ignored) {}
     }
 
     private static void beep() {
         try {
-            // Try a real system beep first
+            // Try real beep if possible
             java.awt.Toolkit.getDefaultToolkit().beep();
+        } catch (Exception ignored) {}
 
-            // Also show a small visual ping
-            System.out.print(ColorText.PINK + "•beep•\n" + ColorText.RESET);
+        // Retro visual beep — centered on its own line
+        System.out.print("\n" + ColorText.PINK + "             •beep•" + ColorText.RESET + "\n");
+        System.out.flush();
+
+        // Little blink animation to simulate feedback
+        try {
+            Thread.sleep(120);
+            System.out.print("\r" + "             " + "\r");
+            Thread.sleep(100);
+            System.out.print(ColorText.PINK + "             •beep•" + ColorText.RESET + "\n");
             System.out.flush();
-        } catch (Exception e) {
-            // Fallback visual + BEL character if sound system unavailable
-            System.out.print("\007" + ColorText.PINK + "•beep•" + ColorText.RESET);
+        } catch (InterruptedException ignored) {}
+    }
+
+    private static void fadeOut() {
+        String[] frames = {
+            ColorText.PINK + "▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒" + ColorText.RESET,
+            ColorText.PURPLE + "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░" + ColorText.RESET,
+            ColorText.GRAY + "                                " + ColorText.RESET
+        };
+
+        for (String frame: frames) {
+            System.out.print("\r" + frame);
             System.out.flush();
+            try { Thread.sleep(90); } catch (InterruptedException ignored) {}
         }
+
+        System.out.print("\r" + "                             " + "\r"); 
+        System.out.println();
     }
 
     // --- Utility Helpers ---
