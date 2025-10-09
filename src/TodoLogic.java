@@ -1,7 +1,9 @@
 import java.time.LocalDate;
 import java.util.List;
 
-public class TodoLogic {
+public class TodoLogic { // Core logic functions for counting tasks
+// Functions to count active, due soon, and overdue tasks
+// Uses Java Streams for filtering and counting
 
     /** Counts active tasks that are not completed */
     public static long countActive(List<Task> tasks) {

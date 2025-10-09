@@ -1,3 +1,7 @@
+# Ignore compiled files and user-specific data
+# Important: Do not remove any entries, they are all used
+# Because this is a Java project, we ignore .class files and IDE settings
+
 # Compiled files
 *.class
 

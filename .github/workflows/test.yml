@@ -1,3 +1,6 @@
+# Important because this is a CI workflow for a Java project
+# Uses GitHub Actions to compile, test, and generate coverage reports
+# Uses JDK 21, JUnit 5, and JaCoCo
 name: Java CI
 
 on:
@@ -33,3 +36,4 @@ jobs:
 
       - name: Run tests with coverage
         run: make coverage
+

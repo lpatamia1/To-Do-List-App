@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 /**
  * Custom adapter for Gson to handle LocalDate serialization/deserialization.
+ * Uses ISO-8601 format (e.g., "2025-10-09").
+ * 
  */
 public class LocalDateAdapter implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
     @Override

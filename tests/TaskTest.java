@@ -2,7 +2,9 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TaskTest {
+public class TaskTest { // Unit tests for Task class
+// Tests task creation, priority comparison, marking completed, and due date parsing
+// Uses JUnit 5 for assertions and test structure
 
     @Test
     void testCompareToByPriority() {

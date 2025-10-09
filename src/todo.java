@@ -1,17 +1,25 @@
+// Main application class for Retro To-Do List
+// Imports below
+// Important: Do not remove any imports, they are all used
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.time.LocalDate;
 import com.google.gson.*;
 
-public class todo {
+public class todo { // Main application class
+// Manages tasks, user interaction, persistence, and UI
+// Uses Gson for JSON serialization
+// Uses ANSI escape codes for colored terminal output
     private static final List<Task> tasks = new ArrayList<>();
     private static final SimpleDateFormat timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static int addedToday = 0;
     private static int completedToday = 0;
     private static final java.time.LocalDateTime startTime = java.time.LocalDateTime.now();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) { // Main menu loop
+    // Shows menu, handles user input, calls functions
+    // Loops until user chooses to exit
         retroBoot();
         loadTasksJSON();
         showStartupSummary();
@@ -40,7 +48,10 @@ public class todo {
 
     // --- Core Features ---
 
-    private static void addTask(Scanner scanner) {
+    private static void addTask(Scanner scanner) { // Add a new task with name, priority, due date
+        // Prompts for task name, priority (H/M/L), due date (YYYY-MM-DD)
+        // Validates input, creates Task object, adds to list, sorts, saves to JSON
+        // Increments addedToday counter, shows success message
         System.out.print(ColorText.YELLOW + "Enter task: " + ColorText.RESET);
         String name = scanner.nextLine().trim();
         if (name.isEmpty()) {
@@ -75,7 +86,12 @@ public class todo {
         pauseAndClear(scanner);
     }
 
-    private static void showTasks() {
+    private static void showTasks() { // Show all tasks in a formatted table
+        // Sort tasks by priority, due date, name
+        // Highlights priority with colors and emojis
+        // Highlights due dates: red for overdue, yellow for today, green for future
+        // Shows counts of total, no due date, added today, completed today
+        // Pauses for user to read, then clears screen
         Collections.sort(tasks);
         if (tasks.isEmpty()) {
             ColorText.warn("🌈 No tasks yet!");
@@ -134,7 +150,10 @@ public class todo {
         pauseAndClear(new Scanner(System.in));
     }
 
-    private static void completeTask(Scanner scanner) {
+    private static void completeTask(Scanner scanner) { // Mark a task as completed
+        // Shows tasks, prompts for number, marks completed if valid
+        // Plays beep and shows message on success/failure
+        // Saves tasks to JSON after marking completed
         showTasks();
         if (tasks.isEmpty()) return;
 
@@ -159,7 +178,8 @@ public class todo {
         pauseAndClear(scanner);
     }
 
-    private static void showCompleted() {
+    private static void showCompleted() { // Show completed tasks with checkmarks
+    // Also shows message if none completed yet and colors accordingly
         ColorText.info("\n✅ Completed Tasks:");
         boolean found = false;
 
@@ -176,7 +196,8 @@ public class todo {
         pauseAndClear(new Scanner(System.in));
     }
 
-    private static void showUpcoming() {
+    private static void showUpcoming() { // Show tasks due within 3 days with emojis
+    // Also highlights if due today/tomorrow and colors accordingly
         ColorText.info("\n📅 Tasks due within 3 days:");
         boolean found = false;
 
@@ -204,7 +225,7 @@ public class todo {
         pauseAndClear(new Scanner(System.in));
     }
 
-    private static void exportMarkdown() {
+    private static void exportMarkdown() { // Export tasks to tasks.md and handle errors while notifying user of success/failure
         try (PrintWriter writer = new PrintWriter(new FileWriter("tasks.md"))) {
             writer.println("# 📝 Retro To-Do List");
             writer.println("_Updated: " + timestamp.format(new Date()) + "_\n");
@@ -225,7 +246,7 @@ public class todo {
 
     // --- Aesthetic Touches ---
 
-    private static void retroBoot() {
+    private static void retroBoot() { // Retro boot animation with rainbow progress bar
         String[] bootMsgs = {
             "Spinning floppy drive... 💾",
             "Installing Java Runtime... ☕",
@@ -236,12 +257,12 @@ public class todo {
             "Loading system aesthetics... 🌈",
             "Compiling positive energy... ✨",
             "Booting motivation module... 🚀"
-        };
+        }; 
 
         List<String> shuffled = new ArrayList<>(Arrays.asList(bootMsgs));
         Collections.shuffle(shuffled);
         List<String> chosen = shuffled.subList(0, 4);
-
+        
         System.out.println(ColorText.BLACK + "🔧 Initializing Retro Environment..." + ColorText.RESET);
 
         int totalSteps = 40;
@@ -259,12 +280,14 @@ public class todo {
                 int r = (int)(Math.sin(frequency * ratio + Math.PI / 2) * 127 + 128);         // red peaks first
                 int g = (int)(Math.sin(frequency * ratio - Math.PI / 6) * 127 + 128);         // green lags slightly
                 int b = (int)(Math.sin(frequency * ratio - 5 * Math.PI / 6) * 127 + 128);     // blue trails farthest
-
+                // 🌈 This gives a smooth rainbow from red to violet
                 bar.append(String.format("\033[38;2;%d;%d;%dm█\033[0m", r, g, b));
             }
             for (int j = i; j < totalSteps; j++) bar.append("▒");
 
             System.out.printf("\rLoading: [%s] %3d%%", bar, progress);
+            System.out.flush(); // This ensures the progress bar updates in place
+
             try { Thread.sleep(70); } catch (InterruptedException ignored) {}
         }
         System.out.println("\033[0m"); // reset color
@@ -277,7 +300,7 @@ public class todo {
         System.out.println("\n" + ColorText.CYAN + "✨ Ready to roll! ✨" + ColorText.RESET);
     }
 
-    private static void showQuote() {
+    private static void showQuote() { // Show a random motivational quote
         String[] quotes = {
             "Keep calm and code on 💻",
             "Progress, not perfection 🌈",
@@ -291,7 +314,7 @@ public class todo {
         System.out.println(ColorText.CYAN + "💬 " + quotes[rand.nextInt(quotes.length)] + ColorText.RESET);
     }
 
-    private static void exitApp() {
+    private static void exitApp() { // This is called when user chooses to exit
         ColorText.line();
         ColorText.success("Exiting… your tasks are saved!");
         ColorText.info("📅 Today’s Stats: Added " + addedToday + " | Completed " + completedToday);
@@ -324,7 +347,7 @@ public class todo {
         } catch (InterruptedException ignored) {}
     }
 
-    private static void beep() {
+    private static void beep() { // Nostalgic beep feedback
         try {
             // Try real beep if possible
             java.awt.Toolkit.getDefaultToolkit().beep();
@@ -344,14 +367,14 @@ public class todo {
         } catch (InterruptedException ignored) {}
     }
 
-    private static void fadeOut() {
+    private static void fadeOut() { // Simple fade-out animation on exit
         String[] frames = {
             ColorText.PINK + "▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒" + ColorText.RESET,
             ColorText.PURPLE + "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░" + ColorText.RESET,
             ColorText.GRAY + "                                " + ColorText.RESET
         };
 
-        for (String frame: frames) {
+        for (String frame: frames) { 
             System.out.print("\r" + frame);
             System.out.flush();
             try { Thread.sleep(90); } catch (InterruptedException ignored) {}
@@ -363,14 +386,14 @@ public class todo {
 
     // --- Utility Helpers ---
 
-    private static void pauseAndClear(Scanner scanner) {
+    private static void pauseAndClear(Scanner scanner) { // Pause for user to read, then clear screen
         System.out.println("\nPress Enter to return to menu...");
         if (scanner.hasNextLine()) scanner.nextLine();
         clearScreen();
     }
 
 
-    private static void clearScreen() {
+    private static void clearScreen() { // Clear console (works in most terminals)
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
@@ -380,7 +403,7 @@ public class todo {
     private static final String JSON_FILE = "tasks.json";
 
     /** Save all tasks to a JSON file */
-    private static void saveTasksJSON() {
+    private static void saveTasksJSON() { // Save tasks to tasks.json and handle errors
         try (Writer writer = new FileWriter(JSON_FILE)) {
             Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
@@ -393,7 +416,7 @@ public class todo {
         }
     }
 
-    private static void loadTasksJSON() {
+    private static void loadTasksJSON() { // Load tasks from tasks.json if it exists
         File file = new File(JSON_FILE);
         if (!file.exists()) return;
 
@@ -409,13 +432,13 @@ public class todo {
 
             Set<String> seen = new HashSet<>();
             tasks.removeIf(t -> !seen.add(t.getName() + t.getDue())); // dedupe by name+due
-            
+
             ColorText.success("📂 Loaded " + tasks.size() + " task(s) from tasks.json");
         } catch (Exception e) {
             ColorText.warn("⚠️ Could not load tasks.json: " + e.getMessage());
         }
     }
-    private static void showStartupSummary() {
+    private static void showStartupSummary() { // Show summary of tasks on startup and motivational touch
         if (tasks.isEmpty()) {
             ColorText.info("\n📭 No tasks yet. Let's add your first one!");
             return;
@@ -444,7 +467,7 @@ public class todo {
     }
 
     /** Helper to escape quotes for JSON */
-    private static String escapeJson(String s) {
+    private static String escapeJson(String s) { // Escape quotes and backslashes
         return s.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 }

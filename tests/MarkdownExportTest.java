@@ -3,7 +3,9 @@ import java.io.*;
 import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MarkdownExportTest {
+public class MarkdownExportTest { // Unit test for markdown export functionality
+// Tests that exporting tasks to markdown creates a file with expected content
+// Uses JUnit 5 for assertions and test structure
 
     @Test
     void testExportCreatesFile() throws IOException {

@@ -3,7 +3,9 @@ import com.google.gson.*;
 import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LocalDateAdapterTest {
+public class LocalDateAdapterTest { // Unit tests for LocalDateAdapter
+// Tests serialization and deserialization of LocalDate to/from JSON
+// Uses JUnit 5 for assertions and test structure
 
     @Test
     void testSerializeAndDeserialize() {

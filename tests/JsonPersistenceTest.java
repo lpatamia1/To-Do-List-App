@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class JsonPersistenceTest {
+public class JsonPersistenceTest { // Integration test for JSON save/load functionality
+// Tests that saving and loading tasks to/from JSON preserves task data
+// Uses JUnit 5 for assertions and test structure
 
     private static final String TEST_FILE = "test_tasks.json";
 

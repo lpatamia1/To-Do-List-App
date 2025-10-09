@@ -4,8 +4,10 @@ import java.io.*;
 import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PersistenceTest {
-
+public class PersistenceTest { // Unit test for persistence functionality
+// Tests saving and loading a task using Gson with LocalDateAdapter
+// Uses JUnit 5 for assertions and test structure
+ 
     @Test
     void testJsonSaveAndLoad() throws Exception {
         Task task = new Task("Demo", "HIGH", LocalDate.now());

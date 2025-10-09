@@ -2,7 +2,9 @@ import org.junit.jupiter.api.*;
 import java.time.LocalDate;
 import java.util.List;
 
-public class TodoLogicTest {
+public class TodoLogicTest { // Unit tests for core logic functions in TodoLogic
+// Tests counting active, due soon, and overdue tasks
+// Uses JUnit 5 for assertions and test structure
 
     @Test
     void testCountActiveExcludesCompleted() {

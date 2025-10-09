@@ -2,7 +2,10 @@ import org.junit.jupiter.api.*;
 import java.io.*;
 import java.time.LocalDate;
 
-public class TodoMenuFlowTest {
+public class TodoMenuFlowTest { // Integration test for main menu flow in todo.main
+// Simulates user input to add a task and then exit
+// Verifies console output for expected messages
+// Uses JUnit 5 for assertions and test structure
 
     @Test
     void testMenuAddAndExitFlow() throws Exception {
