@@ -70,7 +70,6 @@ public class todo {
         tasks.add(newTask);
         addedToday++;
         Collections.sort(tasks);
-        beep();
         ColorText.success("Task added!");
         saveTasksJSON();
         pauseAndClear(scanner);
@@ -397,12 +396,20 @@ public class todo {
     private static void loadTasksJSON() {
         File file = new File(JSON_FILE);
         if (!file.exists()) return;
+
         try (Reader reader = new FileReader(file)) {
             Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-            .create();
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .create();
             Task[] loaded = gson.fromJson(reader, Task[].class);
+
+            tasks.clear();
+
             if (loaded != null) tasks.addAll(Arrays.asList(loaded));
+
+            Set<String> seen = new HashSet<>();
+            tasks.removeIf(t -> !seen.add(t.getName() + t.getDue())); // dedupe by name+due
+            
             ColorText.success("📂 Loaded " + tasks.size() + " task(s) from tasks.json");
         } catch (Exception e) {
             ColorText.warn("⚠️ Could not load tasks.json: " + e.getMessage());

@@ -3,8 +3,6 @@ Terminal-style to-do list that feels like it came straight from a 90s PC.
 Organize your day in a minimalist way — no mouse, no distractions, just text and charm.
 
 ## Test Coverage and Quality Metrics
-## 🧪 Test Coverage & Quality Metrics
-
 ![Tests](https://github.com/lpatamia1/To-Do-List-App/actions/workflows/test.yml/badge.svg)
 ![Coverage](https://img.shields.io/badge/Coverage-89%25-brightgreen)
 
@@ -25,7 +23,7 @@ Organize your day in a minimalist way — no mouse, no distractions, just text a
 - Automatic backup creation  
 - Unit-tested with **JUnit 5**
 
-## 🧰 Tech Stack
+## Tech Stack
 - **Language:** Java 21  
 - **Build Tool:** Make  
 - **Libraries:** Gson, JUnit 5, JaCoCo  
@@ -149,3 +147,9 @@ Choose: 7
 - Shows a random motivational quote each launch
 - Plays terminal beeps for nostalgic feedback
 - Keeps count of tasks added and completed today
+
+## Development Highlights
+- Achieved **89% line coverage** with JaCoCo
+- Built with **modular Java classes and clear separation of logic/UI**
+- Includes **CI pipeline** on GitHub Actions (auto-test every commit)
+- Designed and tested in **GitHub Codespaces**
