@@ -26,9 +26,10 @@ jobs:
           mkdir -p lib
           curl -L -o lib/gson-2.10.1.jar https://repo1.maven.org/maven2/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar
           curl -L -o lib/junit-platform-console-standalone-1.10.2.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.10.2/junit-platform-console-standalone-1.10.2.jar
+          curl -L -o lib/jacocoagent.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/0.8.10/org.jacoco.agent-0.8.10-runtime.jar
 
       - name: Compile project
         run: make compile
 
-      - name: Run tests
-        run: make test
+      - name: Run tests with coverage
+        run: make coverage
