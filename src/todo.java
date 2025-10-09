@@ -366,9 +366,10 @@ public class todo {
 
     private static void pauseAndClear(Scanner scanner) {
         System.out.println("\nPress Enter to return to menu...");
-        scanner.nextLine();
+        if (scanner.hasNextLine()) scanner.nextLine();
         clearScreen();
     }
+
 
     private static void clearScreen() {
         System.out.print("\033[H\033[2J");

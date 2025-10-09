@@ -2,8 +2,17 @@
 Terminal-style to-do list that feels like it came straight from a 90s PC.
 Organize your day in a minimalist way — no mouse, no distractions, just text and charm.
 
+## Test Coverage and Quality Metrics
+## 🧪 Test Coverage & Quality Metrics
+
 ![Tests](https://github.com/lpatamia1/To-Do-List-App/actions/workflows/test.yml/badge.svg)
-![Coverage](https://img.shields.io/badge/Coverage-85%25-brightgreen?style=flat-square)
+![Coverage](https://img.shields.io/badge/Coverage-89%25-brightgreen)
+
+- **Line Coverage:** 89%
+- **Branch Coverage:** 64%
+- **Frameworks:** JUnit 5 + JaCoCo
+- **Continuous Integration:** GitHub Actions  
+- Automated tests ensure data persistence, JSON serialization, markdown export, and task-sorting logic work flawlessly.
 
 ## Features
 - Add and remove tasks with simple numbered prompts  

@@ -5,160 +5,160 @@ import java.time.LocalDate;
 import com.google.gson.*;
 
 <span class="nc" id="L7">public class todo {</span>
-<span class="nc" id="L8">    private static final List&lt;Task&gt; tasks = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L9">    private static final SimpleDateFormat timestamp = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</span>
-<span class="nc" id="L10">    private static int addedToday = 0;</span>
-<span class="nc" id="L11">    private static int completedToday = 0;</span>
-<span class="nc" id="L12">    private static final java.time.LocalDateTime startTime = java.time.LocalDateTime.now();</span>
+<span class="fc" id="L8">    private static final List&lt;Task&gt; tasks = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L9">    private static final SimpleDateFormat timestamp = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</span>
+<span class="fc" id="L10">    private static int addedToday = 0;</span>
+<span class="fc" id="L11">    private static int completedToday = 0;</span>
+<span class="fc" id="L12">    private static final java.time.LocalDateTime startTime = java.time.LocalDateTime.now();</span>
 
     public static void main(String[] args) {
-<span class="nc" id="L15">        retroBoot();</span>
-<span class="nc" id="L16">        loadTasksJSON();</span>
-<span class="nc" id="L17">        showStartupSummary();</span>
-<span class="nc" id="L18">        Scanner scanner = new Scanner(System.in);</span>
-<span class="nc" id="L19">        ColorText.banner(&quot;      🌸 Retro To-Do List 🌸&quot;);</span>
-<span class="nc" id="L20">        showQuote();</span>
+<span class="fc" id="L15">        retroBoot();</span>
+<span class="fc" id="L16">        loadTasksJSON();</span>
+<span class="fc" id="L17">        showStartupSummary();</span>
+<span class="fc" id="L18">        Scanner scanner = new Scanner(System.in);</span>
+<span class="fc" id="L19">        ColorText.banner(&quot;      🌸 Retro To-Do List 🌸&quot;);</span>
+<span class="fc" id="L20">        showQuote();</span>
 
         while (true) {
-<span class="nc" id="L23">            ColorText.line();</span>
-<span class="nc" id="L24">            System.out.println(&quot;1️⃣  Add Task\n2️⃣  View Tasks\n3️⃣  Mark Complete\n4️⃣  Show Upcoming\n5️⃣  Export Markdown\n6️⃣  View Completed\n7️⃣  Exit&quot;);</span>
-<span class="nc" id="L25">            System.out.print(ColorText.CYAN + &quot;Choose: &quot; + ColorText.RESET);</span>
-<span class="nc" id="L26">            String choice = scanner.nextLine().trim();</span>
+<span class="fc" id="L23">            ColorText.line();</span>
+<span class="fc" id="L24">            System.out.println(&quot;1️⃣  Add Task\n2️⃣  View Tasks\n3️⃣  Mark Complete\n4️⃣  Show Upcoming\n5️⃣  Export Markdown\n6️⃣  View Completed\n7️⃣  Exit&quot;);</span>
+<span class="fc" id="L25">            System.out.print(ColorText.CYAN + &quot;Choose: &quot; + ColorText.RESET);</span>
+<span class="fc" id="L26">            String choice = scanner.nextLine().trim();</span>
 
-<span class="nc bnc" id="L28" title="All 8 branches missed.">            switch (choice) {</span>
-<span class="nc" id="L29">                case &quot;1&quot;: addTask(scanner); break;</span>
+<span class="pc bpc" id="L28" title="3 of 8 branches missed.">            switch (choice) {</span>
+<span class="fc" id="L29">                case &quot;1&quot;: addTask(scanner); break;</span>
 <span class="nc" id="L30">                case &quot;2&quot;: showTasks(); break;</span>
-<span class="nc" id="L31">                case &quot;3&quot;: completeTask(scanner); break;</span>
+<span class="fc" id="L31">                case &quot;3&quot;: completeTask(scanner); break;</span>
 <span class="nc" id="L32">                case &quot;4&quot;: showUpcoming(); break;</span>
-<span class="nc" id="L33">                case &quot;5&quot;: exportMarkdown(); break;</span>
+<span class="fc" id="L33">                case &quot;5&quot;: exportMarkdown(); break;</span>
 <span class="nc" id="L34">                case &quot;6&quot;: showCompleted(); break;</span>
-<span class="nc" id="L35">                case &quot;7&quot;: exitApp(); scanner.close(); return;</span>
-<span class="nc" id="L36">                default: beep(); ColorText.warn(&quot;❓ Invalid option. Try again!&quot;);</span>
+<span class="fc" id="L35">                case &quot;7&quot;: exitApp(); scanner.close(); return;</span>
+<span class="fc" id="L36">                default: beep(); ColorText.warn(&quot;❓ Invalid option. Try again!&quot;);</span>
             }
-<span class="nc" id="L38">        }</span>
+<span class="fc" id="L38">        }</span>
     }
 
     // --- Core Features ---
 
     private static void addTask(Scanner scanner) {
-<span class="nc" id="L44">        System.out.print(ColorText.YELLOW + &quot;Enter task: &quot; + ColorText.RESET);</span>
-<span class="nc" id="L45">        String name = scanner.nextLine().trim();</span>
-<span class="nc bnc" id="L46" title="All 2 branches missed.">        if (name.isEmpty()) {</span>
+<span class="fc" id="L44">        System.out.print(ColorText.YELLOW + &quot;Enter task: &quot; + ColorText.RESET);</span>
+<span class="fc" id="L45">        String name = scanner.nextLine().trim();</span>
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">        if (name.isEmpty()) {</span>
 <span class="nc" id="L47">            ColorText.warn(&quot;You can’t add an empty task!&quot;);</span>
 <span class="nc" id="L48">            return;</span>
         }
 
-<span class="nc" id="L51">        System.out.print(ColorText.YELLOW + &quot;Set priority (H/M/L or blank): &quot; + ColorText.RESET);</span>
-<span class="nc" id="L52">        String input = scanner.nextLine().trim().toUpperCase();</span>
+<span class="fc" id="L51">        System.out.print(ColorText.YELLOW + &quot;Set priority (H/M/L or blank): &quot; + ColorText.RESET);</span>
+<span class="fc" id="L52">        String input = scanner.nextLine().trim().toUpperCase();</span>
         String priority;
-<span class="nc bnc" id="L54" title="All 4 branches missed.">        switch (input) {</span>
-<span class="nc" id="L55">            case &quot;H&quot;: priority = &quot;HIGH&quot;; break;</span>
-<span class="nc" id="L56">            case &quot;M&quot;: priority = &quot;MED&quot;; break;</span>
+<span class="pc bpc" id="L54" title="2 of 4 branches missed.">        switch (input) {</span>
+<span class="fc" id="L55">            case &quot;H&quot;: priority = &quot;HIGH&quot;; break;</span>
+<span class="fc" id="L56">            case &quot;M&quot;: priority = &quot;MED&quot;; break;</span>
 <span class="nc" id="L57">            case &quot;L&quot;: priority = &quot;LOW&quot;; break;</span>
 <span class="nc" id="L58">            default: priority = &quot;NONE&quot;; break;</span>
         }
 
-<span class="nc" id="L61">        System.out.print(ColorText.YELLOW + &quot;Enter due date (YYYY-MM-DD or blank): &quot; + ColorText.RESET);</span>
-<span class="nc" id="L62">        String dueInput = scanner.nextLine().trim();</span>
-<span class="nc" id="L63">        LocalDate due = null;</span>
-<span class="nc bnc" id="L64" title="All 2 branches missed.">        if (!dueInput.isEmpty()) {</span>
-<span class="nc" id="L65">            try { due = LocalDate.parse(dueInput); }</span>
-<span class="nc" id="L66">            catch (Exception e) { ColorText.warn(&quot;⚠️ Invalid date format. Skipping due date.&quot;); }</span>
+<span class="fc" id="L61">        System.out.print(ColorText.YELLOW + &quot;Enter due date (YYYY-MM-DD or blank): &quot; + ColorText.RESET);</span>
+<span class="fc" id="L62">        String dueInput = scanner.nextLine().trim();</span>
+<span class="fc" id="L63">        LocalDate due = null;</span>
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">        if (!dueInput.isEmpty()) {</span>
+<span class="fc" id="L65">            try { due = LocalDate.parse(dueInput); }</span>
+<span class="pc" id="L66">            catch (Exception e) { ColorText.warn(&quot;⚠️ Invalid date format. Skipping due date.&quot;); }</span>
         }
 
-<span class="nc" id="L69">        Task newTask = new Task(name, priority, due);</span>
-<span class="nc" id="L70">        tasks.add(newTask);</span>
-<span class="nc" id="L71">        addedToday++;</span>
-<span class="nc" id="L72">        Collections.sort(tasks);</span>
-<span class="nc" id="L73">        beep();</span>
-<span class="nc" id="L74">        ColorText.success(&quot;Task added!&quot;);</span>
-<span class="nc" id="L75">        saveTasksJSON();</span>
-<span class="nc" id="L76">        pauseAndClear(scanner);</span>
-<span class="nc" id="L77">    }</span>
+<span class="fc" id="L69">        Task newTask = new Task(name, priority, due);</span>
+<span class="fc" id="L70">        tasks.add(newTask);</span>
+<span class="fc" id="L71">        addedToday++;</span>
+<span class="fc" id="L72">        Collections.sort(tasks);</span>
+<span class="fc" id="L73">        beep();</span>
+<span class="fc" id="L74">        ColorText.success(&quot;Task added!&quot;);</span>
+<span class="fc" id="L75">        saveTasksJSON();</span>
+<span class="fc" id="L76">        pauseAndClear(scanner);</span>
+<span class="fc" id="L77">    }</span>
 
     private static void showTasks() {
-<span class="nc" id="L80">        Collections.sort(tasks);</span>
-<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (tasks.isEmpty()) {</span>
+<span class="fc" id="L80">        Collections.sort(tasks);</span>
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">        if (tasks.isEmpty()) {</span>
 <span class="nc" id="L82">            ColorText.warn(&quot;🌈 No tasks yet!&quot;);</span>
 <span class="nc" id="L83">            pauseAndClear(new Scanner(System.in));</span>
 <span class="nc" id="L84">            return;</span>
         }
 
         // --- Table Header (your formatting kept) ---
-<span class="nc" id="L88">        ColorText.info(&quot;\n📝 Your Tasks:&quot;);</span>
-<span class="nc" id="L89">        System.out.printf(ColorText.CYAN + &quot;%-3s %-37s %-18s %-12s%n&quot; + ColorText.RESET,</span>
+<span class="fc" id="L88">        ColorText.info(&quot;\n📝 Your Tasks:&quot;);</span>
+<span class="fc" id="L89">        System.out.printf(ColorText.CYAN + &quot;%-3s %-37s %-18s %-12s%n&quot; + ColorText.RESET,</span>
                 &quot;#&quot;, &quot;Task&quot;, &quot;Priority&quot;, &quot;Due Date&quot;);
-<span class="nc" id="L91">        System.out.println(ColorText.CYAN + &quot;───────────────────────────────────────────────────────────────────────&quot; + ColorText.RESET);</span>
+<span class="fc" id="L91">        System.out.println(ColorText.CYAN + &quot;───────────────────────────────────────────────────────────────────────&quot; + ColorText.RESET);</span>
 
         // --- Table Rows ---
-<span class="nc bnc" id="L94" title="All 2 branches missed.">        for (int i = 0; i &lt; tasks.size(); i++) {</span>
-<span class="nc" id="L95">            Task t = tasks.get(i);</span>
-<span class="nc bnc" id="L96" title="All 2 branches missed.">            if (t.isCompleted()) continue;</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        for (int i = 0; i &lt; tasks.size(); i++) {</span>
+<span class="fc" id="L95">            Task t = tasks.get(i);</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">            if (t.isCompleted()) continue;</span>
 
-<span class="nc" id="L98">            String priority = t.getPriority();</span>
-<span class="nc bnc" id="L99" title="All 2 branches missed.">            String due = (t.getDue() == null) ? &quot;💤 [NO DUE DATE]&quot; : t.getDue().toString();</span>
+<span class="fc" id="L98">            String priority = t.getPriority();</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">            String due = (t.getDue() == null) ? &quot;💤 [NO DUE DATE]&quot; : t.getDue().toString();</span>
 
             // --- Color priority like your version ---
             String coloredPriority;
-<span class="nc bnc" id="L103" title="All 4 branches missed.">            switch (priority) {</span>
+<span class="fc bfc" id="L103" title="All 4 branches covered.">            switch (priority) {</span>
                 case &quot;HIGH&quot;:
-<span class="nc" id="L105">                    coloredPriority = ColorText.RED + &quot;🔥 [HIGH]&quot; + ColorText.RESET;</span>
-<span class="nc" id="L106">                    break;</span>
+<span class="fc" id="L105">                    coloredPriority = ColorText.RED + &quot;🔥 [HIGH]&quot; + ColorText.RESET;</span>
+<span class="fc" id="L106">                    break;</span>
                 case &quot;MED&quot;:
-<span class="nc" id="L108">                    coloredPriority = ColorText.YELLOW + &quot;⚡ [MED]&quot; + ColorText.RESET;</span>
-<span class="nc" id="L109">                    break;</span>
+<span class="fc" id="L108">                    coloredPriority = ColorText.YELLOW + &quot;⚡ [MED]&quot; + ColorText.RESET;</span>
+<span class="fc" id="L109">                    break;</span>
                 case &quot;LOW&quot;:
-<span class="nc" id="L111">                    coloredPriority = ColorText.GREEN + &quot;🌿 [LOW]&quot; + ColorText.RESET;</span>
-<span class="nc" id="L112">                    break;</span>
+<span class="fc" id="L111">                    coloredPriority = ColorText.GREEN + &quot;🌿 [LOW]&quot; + ColorText.RESET;</span>
+<span class="fc" id="L112">                    break;</span>
                 default:
-<span class="nc" id="L114">                    coloredPriority = ColorText.GRAY + &quot;💤 [NONE]&quot; + ColorText.RESET;</span>
+<span class="fc" id="L114">                    coloredPriority = ColorText.GRAY + &quot;💤 [NONE]&quot; + ColorText.RESET;</span>
                     break;
             }
 
             // --- Highlight due date ---
-<span class="nc bnc" id="L119" title="All 2 branches missed.">            if (t.getDue() != null) {</span>
-<span class="nc" id="L120">                LocalDate d = t.getDue();</span>
-<span class="nc bnc" id="L121" title="All 2 branches missed.">                if (LocalDate.now().isAfter(d)) due = ColorText.RED + due + &quot; ⚠️&quot; + ColorText.RESET;</span>
-<span class="nc bnc" id="L122" title="All 2 branches missed.">                else if (LocalDate.now().equals(d)) due = ColorText.YELLOW + due + &quot; ⏰&quot; + ColorText.RESET;</span>
-<span class="nc" id="L123">                else due = ColorText.GREEN + due + ColorText.RESET;</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">            if (t.getDue() != null) {</span>
+<span class="fc" id="L120">                LocalDate d = t.getDue();</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">                if (LocalDate.now().isAfter(d)) due = ColorText.RED + due + &quot; ⚠️&quot; + ColorText.RESET;</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">                else if (LocalDate.now().equals(d)) due = ColorText.YELLOW + due + &quot; ⏰&quot; + ColorText.RESET;</span>
+<span class="fc" id="L123">                else due = ColorText.GREEN + due + ColorText.RESET;</span>
             }
 
             // --- Print row ---
-<span class="nc" id="L127">            System.out.printf(ColorText.BLUE + &quot;%-3d %-37s %-26s %-12s&quot; + ColorText.RESET + &quot;%n&quot;,</span>
-<span class="nc" id="L128">                    (i + 1), t.getName(), coloredPriority, due);</span>
+<span class="fc" id="L127">            System.out.printf(ColorText.BLUE + &quot;%-3d %-37s %-26s %-12s&quot; + ColorText.RESET + &quot;%n&quot;,</span>
+<span class="fc" id="L128">                    (i + 1), t.getName(), coloredPriority, due);</span>
         }
 
-<span class="nc bnc" id="L131" title="All 2 branches missed.">        long noDate = tasks.stream().filter(t -&gt; t.getDue() == null).count();</span>
-<span class="nc" id="L132">        ColorText.info(String.format(&quot;\n📊 %d total | %d without due date | %d added today | %d completed today&quot;,</span>
-<span class="nc" id="L133">            tasks.size(), noDate, addedToday, completedToday));</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        long noDate = tasks.stream().filter(t -&gt; t.getDue() == null).count();</span>
+<span class="fc" id="L132">        ColorText.info(String.format(&quot;\n📊 %d total | %d without due date | %d added today | %d completed today&quot;,</span>
+<span class="fc" id="L133">            tasks.size(), noDate, addedToday, completedToday));</span>
 
-<span class="nc" id="L135">        pauseAndClear(new Scanner(System.in));</span>
-<span class="nc" id="L136">    }</span>
+<span class="fc" id="L135">        pauseAndClear(new Scanner(System.in));</span>
+<span class="fc" id="L136">    }</span>
 
     private static void completeTask(Scanner scanner) {
-<span class="nc" id="L139">        showTasks();</span>
-<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (tasks.isEmpty()) return;</span>
+<span class="fc" id="L139">        showTasks();</span>
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">        if (tasks.isEmpty()) return;</span>
 
-<span class="nc" id="L142">        System.out.print(ColorText.YELLOW + &quot;Enter number to complete: &quot; + ColorText.RESET);</span>
+<span class="fc" id="L142">        System.out.print(ColorText.YELLOW + &quot;Enter number to complete: &quot; + ColorText.RESET);</span>
         try {
-<span class="nc" id="L144">            int index = Integer.parseInt(scanner.nextLine()) - 1;</span>
-<span class="nc bnc" id="L145" title="All 4 branches missed.">            if (index &gt;= 0 &amp;&amp; index &lt; tasks.size()) {</span>
-<span class="nc" id="L146">                Task t = tasks.get(index);</span>
-<span class="nc" id="L147">                t.markCompleted();</span>
-<span class="nc" id="L148">                completedToday++;</span>
-<span class="nc" id="L149">                beep();</span>
-<span class="nc" id="L150">                ColorText.success(&quot;✅ Completed: &quot; + t.getName());</span>
-<span class="nc" id="L151">                saveTasksJSON();</span>
-<span class="nc" id="L152">            } else {</span>
+<span class="fc" id="L144">            int index = Integer.parseInt(scanner.nextLine()) - 1;</span>
+<span class="pc bpc" id="L145" title="2 of 4 branches missed.">            if (index &gt;= 0 &amp;&amp; index &lt; tasks.size()) {</span>
+<span class="fc" id="L146">                Task t = tasks.get(index);</span>
+<span class="fc" id="L147">                t.markCompleted();</span>
+<span class="fc" id="L148">                completedToday++;</span>
+<span class="fc" id="L149">                beep();</span>
+<span class="fc" id="L150">                ColorText.success(&quot;✅ Completed: &quot; + t.getName());</span>
+<span class="fc" id="L151">                saveTasksJSON();</span>
+<span class="fc" id="L152">            } else {</span>
 <span class="nc" id="L153">                beep();</span>
 <span class="nc" id="L154">                ColorText.warn(&quot;Invalid task number!&quot;);</span>
             }
 <span class="nc" id="L156">        } catch (NumberFormatException e) {</span>
 <span class="nc" id="L157">            beep();</span>
 <span class="nc" id="L158">            ColorText.warn(&quot;Please enter a valid number.&quot;);</span>
-<span class="nc" id="L159">        }</span>
-<span class="nc" id="L160">        pauseAndClear(scanner);</span>
-<span class="nc" id="L161">    }</span>
+<span class="fc" id="L159">        }</span>
+<span class="fc" id="L160">        pauseAndClear(scanner);</span>
+<span class="fc" id="L161">    }</span>
 
     private static void showCompleted() {
 <span class="nc" id="L164">        ColorText.info(&quot;\n✅ Completed Tasks:&quot;);</span>
@@ -206,28 +206,28 @@ import com.google.gson.*;
 <span class="nc" id="L206">    }</span>
 
     private static void exportMarkdown() {
-<span class="nc" id="L209">        try (PrintWriter writer = new PrintWriter(new FileWriter(&quot;tasks.md&quot;))) {</span>
-<span class="nc" id="L210">            writer.println(&quot;# 📝 Retro To-Do List&quot;);</span>
-<span class="nc" id="L211">            writer.println(&quot;_Updated: &quot; + timestamp.format(new Date()) + &quot;_\n&quot;);</span>
-<span class="nc bnc" id="L212" title="All 2 branches missed.">            if (tasks.isEmpty()) {</span>
+<span class="fc" id="L209">        try (PrintWriter writer = new PrintWriter(new FileWriter(&quot;tasks.md&quot;))) {</span>
+<span class="fc" id="L210">            writer.println(&quot;# 📝 Retro To-Do List&quot;);</span>
+<span class="fc" id="L211">            writer.println(&quot;_Updated: &quot; + timestamp.format(new Date()) + &quot;_\n&quot;);</span>
+<span class="pc bpc" id="L212" title="1 of 2 branches missed.">            if (tasks.isEmpty()) {</span>
 <span class="nc" id="L213">                writer.println(&quot;✅ All tasks completed! 🎉&quot;);</span>
             } else {
-<span class="nc" id="L215">                writer.println(&quot;## Pending Tasks:\n&quot;);</span>
-<span class="nc bnc" id="L216" title="All 2 branches missed.">                for (Task t : tasks) {</span>
-<span class="nc bnc" id="L217" title="All 2 branches missed.">                    String box = t.isCompleted() ? &quot;[x]&quot; : &quot;[ ]&quot;;</span>
-<span class="nc" id="L218">                    writer.println(&quot;- &quot; + box + &quot; &quot; + t.getName() + &quot; (&quot; + t.getPriority() + &quot;)&quot;);</span>
-<span class="nc" id="L219">                }</span>
+<span class="fc" id="L215">                writer.println(&quot;## Pending Tasks:\n&quot;);</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">                for (Task t : tasks) {</span>
+<span class="fc bfc" id="L217" title="All 2 branches covered.">                    String box = t.isCompleted() ? &quot;[x]&quot; : &quot;[ ]&quot;;</span>
+<span class="fc" id="L218">                    writer.println(&quot;- &quot; + box + &quot; &quot; + t.getName() + &quot; (&quot; + t.getPriority() + &quot;)&quot;);</span>
+<span class="fc" id="L219">                }</span>
             }
-<span class="nc" id="L221">            ColorText.success(&quot;🗒️  Exported to tasks.md&quot;);</span>
+<span class="fc" id="L221">            ColorText.success(&quot;🗒️  Exported to tasks.md&quot;);</span>
 <span class="nc" id="L222">        } catch (IOException e) {</span>
 <span class="nc" id="L223">            ColorText.warn(&quot;⚠️ Could not export to Markdown.&quot;);</span>
-<span class="nc" id="L224">        }</span>
-<span class="nc" id="L225">    }</span>
+<span class="fc" id="L224">        }</span>
+<span class="fc" id="L225">    }</span>
 
     // --- Aesthetic Touches ---
 
     private static void retroBoot() {
-<span class="nc" id="L230">        String[] bootMsgs = {</span>
+<span class="fc" id="L230">        String[] bootMsgs = {</span>
             &quot;Spinning floppy drive... 💾&quot;,
             &quot;Installing Java Runtime... ☕&quot;,
             &quot;Rendering pixels of productivity... 🎨&quot;,
@@ -239,47 +239,47 @@ import com.google.gson.*;
             &quot;Booting motivation module... 🚀&quot;
         };
 
-<span class="nc" id="L242">        List&lt;String&gt; shuffled = new ArrayList&lt;&gt;(Arrays.asList(bootMsgs));</span>
-<span class="nc" id="L243">        Collections.shuffle(shuffled);</span>
-<span class="nc" id="L244">        List&lt;String&gt; chosen = shuffled.subList(0, 4);</span>
+<span class="fc" id="L242">        List&lt;String&gt; shuffled = new ArrayList&lt;&gt;(Arrays.asList(bootMsgs));</span>
+<span class="fc" id="L243">        Collections.shuffle(shuffled);</span>
+<span class="fc" id="L244">        List&lt;String&gt; chosen = shuffled.subList(0, 4);</span>
 
-<span class="nc" id="L246">        System.out.println(ColorText.BLACK + &quot;🔧 Initializing Retro Environment...&quot; + ColorText.RESET);</span>
+<span class="fc" id="L246">        System.out.println(ColorText.BLACK + &quot;🔧 Initializing Retro Environment...&quot; + ColorText.RESET);</span>
 
-<span class="nc" id="L248">        int totalSteps = 40;</span>
-<span class="nc bnc" id="L249" title="All 2 branches missed.">        for (int i = 0; i &lt;= totalSteps; i++) {</span>
-<span class="nc" id="L250">            int progress = (i * 100) / totalSteps;</span>
+<span class="fc" id="L248">        int totalSteps = 40;</span>
+<span class="fc bfc" id="L249" title="All 2 branches covered.">        for (int i = 0; i &lt;= totalSteps; i++) {</span>
+<span class="fc" id="L250">            int progress = (i * 100) / totalSteps;</span>
 
-<span class="nc" id="L252">            StringBuilder bar = new StringBuilder();</span>
-<span class="nc bnc" id="L253" title="All 2 branches missed.">            for (int j = 0; j &lt; i; j++) {</span>
-<span class="nc" id="L254">                double ratio = (double) j / totalSteps;</span>
+<span class="fc" id="L252">            StringBuilder bar = new StringBuilder();</span>
+<span class="fc bfc" id="L253" title="All 2 branches covered.">            for (int j = 0; j &lt; i; j++) {</span>
+<span class="fc" id="L254">                double ratio = (double) j / totalSteps;</span>
 
                 // 🌈 Proper red-start rainbow gradient using rotated sine waves
-<span class="nc" id="L257">                double frequency = 1.7 * Math.PI;</span>
+<span class="fc" id="L257">                double frequency = 1.7 * Math.PI;</span>
 
                 // 🌈 Correct alignment: starts at pure red
-<span class="nc" id="L260">                int r = (int)(Math.sin(frequency * ratio + Math.PI / 2) * 127 + 128);         // red peaks first</span>
-<span class="nc" id="L261">                int g = (int)(Math.sin(frequency * ratio - Math.PI / 6) * 127 + 128);         // green lags slightly</span>
-<span class="nc" id="L262">                int b = (int)(Math.sin(frequency * ratio - 5 * Math.PI / 6) * 127 + 128);     // blue trails farthest</span>
+<span class="fc" id="L260">                int r = (int)(Math.sin(frequency * ratio + Math.PI / 2) * 127 + 128);         // red peaks first</span>
+<span class="fc" id="L261">                int g = (int)(Math.sin(frequency * ratio - Math.PI / 6) * 127 + 128);         // green lags slightly</span>
+<span class="fc" id="L262">                int b = (int)(Math.sin(frequency * ratio - 5 * Math.PI / 6) * 127 + 128);     // blue trails farthest</span>
 
-<span class="nc" id="L264">                bar.append(String.format(&quot;\033[38;2;%d;%d;%dm█\033[0m&quot;, r, g, b));</span>
+<span class="fc" id="L264">                bar.append(String.format(&quot;\033[38;2;%d;%d;%dm█\033[0m&quot;, r, g, b));</span>
             }
-<span class="nc bnc" id="L266" title="All 2 branches missed.">            for (int j = i; j &lt; totalSteps; j++) bar.append(&quot;▒&quot;);</span>
+<span class="fc bfc" id="L266" title="All 2 branches covered.">            for (int j = i; j &lt; totalSteps; j++) bar.append(&quot;▒&quot;);</span>
 
-<span class="nc" id="L268">            System.out.printf(&quot;\rLoading: [%s] %3d%%&quot;, bar, progress);</span>
-<span class="nc" id="L269">            try { Thread.sleep(70); } catch (InterruptedException ignored) {}</span>
+<span class="fc" id="L268">            System.out.printf(&quot;\rLoading: [%s] %3d%%&quot;, bar, progress);</span>
+<span class="pc" id="L269">            try { Thread.sleep(70); } catch (InterruptedException ignored) {}</span>
         }
-<span class="nc" id="L271">        System.out.println(&quot;\033[0m&quot;); // reset color</span>
+<span class="fc" id="L271">        System.out.println(&quot;\033[0m&quot;); // reset color</span>
 
-<span class="nc" id="L273">        System.out.println();</span>
-<span class="nc bnc" id="L274" title="All 2 branches missed.">        for (String msg : chosen) {</span>
-<span class="nc" id="L275">            System.out.println(ColorText.BLACK + msg + ColorText.RESET);</span>
-<span class="nc" id="L276">            try { Thread.sleep(600); } catch (InterruptedException ignored) {}</span>
-<span class="nc" id="L277">        }</span>
-<span class="nc" id="L278">        System.out.println(&quot;\n&quot; + ColorText.CYAN + &quot;✨ Ready to roll! ✨&quot; + ColorText.RESET);</span>
-<span class="nc" id="L279">    }</span>
+<span class="fc" id="L273">        System.out.println();</span>
+<span class="fc bfc" id="L274" title="All 2 branches covered.">        for (String msg : chosen) {</span>
+<span class="fc" id="L275">            System.out.println(ColorText.BLACK + msg + ColorText.RESET);</span>
+<span class="pc" id="L276">            try { Thread.sleep(600); } catch (InterruptedException ignored) {}</span>
+<span class="fc" id="L277">        }</span>
+<span class="fc" id="L278">        System.out.println(&quot;\n&quot; + ColorText.CYAN + &quot;✨ Ready to roll! ✨&quot; + ColorText.RESET);</span>
+<span class="fc" id="L279">    }</span>
 
     private static void showQuote() {
-<span class="nc" id="L282">        String[] quotes = {</span>
+<span class="fc" id="L282">        String[] quotes = {</span>
             &quot;Keep calm and code on 💻&quot;,
             &quot;Progress, not perfection 🌈&quot;,
             &quot;Every bug teaches you something 🐛&quot;,
@@ -288,92 +288,93 @@ import com.google.gson.*;
             &quot;You are doing great! 🌟&quot;,
             &quot;Make today ridiculously amazing! 🚀&quot;,
         };
-<span class="nc" id="L291">        Random rand = new Random();</span>
-<span class="nc" id="L292">        System.out.println(ColorText.CYAN + &quot;💬 &quot; + quotes[rand.nextInt(quotes.length)] + ColorText.RESET);</span>
-<span class="nc" id="L293">    }</span>
+<span class="fc" id="L291">        Random rand = new Random();</span>
+<span class="fc" id="L292">        System.out.println(ColorText.CYAN + &quot;💬 &quot; + quotes[rand.nextInt(quotes.length)] + ColorText.RESET);</span>
+<span class="fc" id="L293">    }</span>
 
     private static void exitApp() {
-<span class="nc" id="L296">        ColorText.line();</span>
-<span class="nc" id="L297">        ColorText.success(&quot;Exiting… your tasks are saved!&quot;);</span>
-<span class="nc" id="L298">        ColorText.info(&quot;📅 Today’s Stats: Added &quot; + addedToday + &quot; | Completed &quot; + completedToday);</span>
+<span class="fc" id="L296">        ColorText.line();</span>
+<span class="fc" id="L297">        ColorText.success(&quot;Exiting… your tasks are saved!&quot;);</span>
+<span class="fc" id="L298">        ColorText.info(&quot;📅 Today’s Stats: Added &quot; + addedToday + &quot; | Completed &quot; + completedToday);</span>
         
-<span class="nc" id="L300">        saveTasksJSON();</span>
-<span class="nc" id="L301">        exportMarkdown();</span>
+<span class="fc" id="L300">        saveTasksJSON();</span>
+<span class="fc" id="L301">        exportMarkdown();</span>
 
-<span class="nc" id="L303">        ColorText.info(&quot;📂 Serialized &quot; + tasks.size() + &quot; tasks to tasks.json&quot;);</span>
+<span class="fc" id="L303">        ColorText.info(&quot;📂 Serialized &quot; + tasks.size() + &quot; tasks to tasks.json&quot;);</span>
     
-<span class="nc" id="L305">        java.time.Duration session = java.time.Duration.between(startTime, java.time.LocalDateTime.now());</span>
-<span class="nc" id="L306">        long minutes = session.toMinutes();</span>
-<span class="nc" id="L307">        long seconds = session.minusMinutes(minutes).getSeconds();</span>
+<span class="fc" id="L305">        java.time.Duration session = java.time.Duration.between(startTime, java.time.LocalDateTime.now());</span>
+<span class="fc" id="L306">        long minutes = session.toMinutes();</span>
+<span class="fc" id="L307">        long seconds = session.minusMinutes(minutes).getSeconds();</span>
 
-<span class="nc bnc" id="L309" title="All 4 branches missed.">        if (minutes == 0 &amp;&amp; seconds &lt; 10) {</span>
-<span class="nc" id="L310">            ColorText.info(&quot;⏱️  Session Duration: &quot; + seconds + &quot; seconds&quot;);</span>
+<span class="pc bpc" id="L309" title="1 of 4 branches missed.">        if (minutes == 0 &amp;&amp; seconds &lt; 10) {</span>
+<span class="fc" id="L310">            ColorText.info(&quot;⏱️  Session Duration: &quot; + seconds + &quot; seconds&quot;);</span>
         }
         else {
-<span class="nc" id="L313">            ColorText.info(String.format(&quot;⏱️  Session Duration: %d minutes, %d seconds&quot;, minutes, seconds));</span>
+<span class="fc" id="L313">            ColorText.info(String.format(&quot;⏱️  Session Duration: %d minutes, %d seconds&quot;, minutes, seconds));</span>
         }
         
-<span class="nc" id="L316">        ColorText.success(&quot;✨ Goodbye! Stay groovy and productive! 🎸&quot;);</span>
+<span class="fc" id="L316">        ColorText.success(&quot;✨ Goodbye! Stay groovy and productive! 🎸&quot;);</span>
 
         try {
-<span class="nc" id="L319">            Thread.sleep(400);</span>
-<span class="nc" id="L320">            System.out.print(&quot;\n&quot; + ColorText.PINK + &quot;             •beep•&quot; + ColorText.RESET + &quot;\n&quot;);</span>
-<span class="nc" id="L321">            java.awt.Toolkit.getDefaultToolkit().beep();</span>
-<span class="nc" id="L322">            System.out.flush();</span>
-<span class="nc" id="L323">            Thread.sleep(600);</span>
-<span class="nc" id="L324">            fadeOut();</span>
-<span class="nc" id="L325">        } catch (InterruptedException ignored) {}</span>
-<span class="nc" id="L326">    }</span>
+<span class="fc" id="L319">            Thread.sleep(400);</span>
+<span class="fc" id="L320">            System.out.print(&quot;\n&quot; + ColorText.PINK + &quot;             •beep•&quot; + ColorText.RESET + &quot;\n&quot;);</span>
+<span class="fc" id="L321">            java.awt.Toolkit.getDefaultToolkit().beep();</span>
+<span class="fc" id="L322">            System.out.flush();</span>
+<span class="fc" id="L323">            Thread.sleep(600);</span>
+<span class="fc" id="L324">            fadeOut();</span>
+<span class="pc" id="L325">        } catch (InterruptedException ignored) {}</span>
+<span class="fc" id="L326">    }</span>
 
     private static void beep() {
         try {
             // Try real beep if possible
-<span class="nc" id="L331">            java.awt.Toolkit.getDefaultToolkit().beep();</span>
-<span class="nc" id="L332">        } catch (Exception ignored) {}</span>
+<span class="fc" id="L331">            java.awt.Toolkit.getDefaultToolkit().beep();</span>
+<span class="pc" id="L332">        } catch (Exception ignored) {}</span>
 
         // Retro visual beep — centered on its own line
-<span class="nc" id="L335">        System.out.print(&quot;\n&quot; + ColorText.PINK + &quot;             •beep•&quot; + ColorText.RESET + &quot;\n&quot;);</span>
-<span class="nc" id="L336">        System.out.flush();</span>
+<span class="fc" id="L335">        System.out.print(&quot;\n&quot; + ColorText.PINK + &quot;             •beep•&quot; + ColorText.RESET + &quot;\n&quot;);</span>
+<span class="fc" id="L336">        System.out.flush();</span>
 
         // Little blink animation to simulate feedback
         try {
-<span class="nc" id="L340">            Thread.sleep(120);</span>
-<span class="nc" id="L341">            System.out.print(&quot;\r&quot; + &quot;             &quot; + &quot;\r&quot;);</span>
-<span class="nc" id="L342">            Thread.sleep(100);</span>
-<span class="nc" id="L343">            System.out.print(ColorText.PINK + &quot;             •beep•&quot; + ColorText.RESET + &quot;\n&quot;);</span>
-<span class="nc" id="L344">            System.out.flush();</span>
-<span class="nc" id="L345">        } catch (InterruptedException ignored) {}</span>
-<span class="nc" id="L346">    }</span>
+<span class="fc" id="L340">            Thread.sleep(120);</span>
+<span class="fc" id="L341">            System.out.print(&quot;\r&quot; + &quot;             &quot; + &quot;\r&quot;);</span>
+<span class="fc" id="L342">            Thread.sleep(100);</span>
+<span class="fc" id="L343">            System.out.print(ColorText.PINK + &quot;             •beep•&quot; + ColorText.RESET + &quot;\n&quot;);</span>
+<span class="fc" id="L344">            System.out.flush();</span>
+<span class="pc" id="L345">        } catch (InterruptedException ignored) {}</span>
+<span class="fc" id="L346">    }</span>
 
     private static void fadeOut() {
-<span class="nc" id="L349">        String[] frames = {</span>
+<span class="fc" id="L349">        String[] frames = {</span>
             ColorText.PINK + &quot;▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒&quot; + ColorText.RESET,
             ColorText.PURPLE + &quot;░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░&quot; + ColorText.RESET,
             ColorText.GRAY + &quot;                                &quot; + ColorText.RESET
         };
 
-<span class="nc bnc" id="L355" title="All 2 branches missed.">        for (String frame: frames) {</span>
-<span class="nc" id="L356">            System.out.print(&quot;\r&quot; + frame);</span>
-<span class="nc" id="L357">            System.out.flush();</span>
-<span class="nc" id="L358">            try { Thread.sleep(90); } catch (InterruptedException ignored) {}</span>
+<span class="fc bfc" id="L355" title="All 2 branches covered.">        for (String frame: frames) {</span>
+<span class="fc" id="L356">            System.out.print(&quot;\r&quot; + frame);</span>
+<span class="fc" id="L357">            System.out.flush();</span>
+<span class="pc" id="L358">            try { Thread.sleep(90); } catch (InterruptedException ignored) {}</span>
         }
 
-<span class="nc" id="L361">        System.out.print(&quot;\r&quot; + &quot;                             &quot; + &quot;\r&quot;); </span>
-<span class="nc" id="L362">        System.out.println();</span>
-<span class="nc" id="L363">    }</span>
+<span class="fc" id="L361">        System.out.print(&quot;\r&quot; + &quot;                             &quot; + &quot;\r&quot;); </span>
+<span class="fc" id="L362">        System.out.println();</span>
+<span class="fc" id="L363">    }</span>
 
     // --- Utility Helpers ---
 
     private static void pauseAndClear(Scanner scanner) {
-<span class="nc" id="L368">        System.out.println(&quot;\nPress Enter to return to menu...&quot;);</span>
-<span class="nc" id="L369">        scanner.nextLine();</span>
-<span class="nc" id="L370">        clearScreen();</span>
-<span class="nc" id="L371">    }</span>
+<span class="fc" id="L368">        System.out.println(&quot;\nPress Enter to return to menu...&quot;);</span>
+<span class="fc bfc" id="L369" title="All 2 branches covered.">        if (scanner.hasNextLine()) scanner.nextLine();</span>
+<span class="fc" id="L370">        clearScreen();</span>
+<span class="fc" id="L371">    }</span>
+
 
     private static void clearScreen() {
-<span class="nc" id="L374">        System.out.print(&quot;\033[H\033[2J&quot;);</span>
-<span class="nc" id="L375">        System.out.flush();</span>
-<span class="nc" id="L376">    }</span>
+<span class="fc" id="L375">        System.out.print(&quot;\033[H\033[2J&quot;);</span>
+<span class="fc" id="L376">        System.out.flush();</span>
+<span class="fc" id="L377">    }</span>
 
     // --- JSON Persistence ---
 
@@ -381,63 +382,63 @@ import com.google.gson.*;
 
     /** Save all tasks to a JSON file */
     private static void saveTasksJSON() {
-<span class="nc" id="L384">        try (Writer writer = new FileWriter(JSON_FILE)) {</span>
-<span class="nc" id="L385">            Gson gson = new GsonBuilder()</span>
-<span class="nc" id="L386">                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())</span>
-<span class="nc" id="L387">                .setPrettyPrinting()</span>
-<span class="nc" id="L388">                .create();</span>
-<span class="nc" id="L389">            gson.toJson(tasks, writer);</span>
-<span class="nc" id="L390">            ColorText.info(&quot;Tasks saved to tasks.json&quot;);</span>
-<span class="nc" id="L391">        } catch (IOException e) {</span>
-<span class="nc" id="L392">            ColorText.warn(&quot;⚠️ Could not save tasks.json: &quot; + e.getMessage());</span>
-<span class="nc" id="L393">        }</span>
-<span class="nc" id="L394">    }</span>
+<span class="fc" id="L385">        try (Writer writer = new FileWriter(JSON_FILE)) {</span>
+<span class="fc" id="L386">            Gson gson = new GsonBuilder()</span>
+<span class="fc" id="L387">                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())</span>
+<span class="fc" id="L388">                .setPrettyPrinting()</span>
+<span class="fc" id="L389">                .create();</span>
+<span class="fc" id="L390">            gson.toJson(tasks, writer);</span>
+<span class="fc" id="L391">            ColorText.info(&quot;Tasks saved to tasks.json&quot;);</span>
+<span class="nc" id="L392">        } catch (IOException e) {</span>
+<span class="nc" id="L393">            ColorText.warn(&quot;⚠️ Could not save tasks.json: &quot; + e.getMessage());</span>
+<span class="fc" id="L394">        }</span>
+<span class="fc" id="L395">    }</span>
 
     private static void loadTasksJSON() {
-<span class="nc" id="L397">        File file = new File(JSON_FILE);</span>
-<span class="nc bnc" id="L398" title="All 2 branches missed.">        if (!file.exists()) return;</span>
-<span class="nc" id="L399">        try (Reader reader = new FileReader(file)) {</span>
-<span class="nc" id="L400">            Gson gson = new GsonBuilder()</span>
-<span class="nc" id="L401">            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())</span>
-<span class="nc" id="L402">            .create();</span>
-<span class="nc" id="L403">            Task[] loaded = gson.fromJson(reader, Task[].class);</span>
-<span class="nc bnc" id="L404" title="All 2 branches missed.">            if (loaded != null) tasks.addAll(Arrays.asList(loaded));</span>
-<span class="nc" id="L405">            ColorText.success(&quot;📂 Loaded &quot; + tasks.size() + &quot; task(s) from tasks.json&quot;);</span>
-<span class="nc" id="L406">        } catch (Exception e) {</span>
-<span class="nc" id="L407">            ColorText.warn(&quot;⚠️ Could not load tasks.json: &quot; + e.getMessage());</span>
-<span class="nc" id="L408">        }</span>
-<span class="nc" id="L409">    }</span>
+<span class="fc" id="L398">        File file = new File(JSON_FILE);</span>
+<span class="pc bpc" id="L399" title="1 of 2 branches missed.">        if (!file.exists()) return;</span>
+<span class="fc" id="L400">        try (Reader reader = new FileReader(file)) {</span>
+<span class="fc" id="L401">            Gson gson = new GsonBuilder()</span>
+<span class="fc" id="L402">            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())</span>
+<span class="fc" id="L403">            .create();</span>
+<span class="fc" id="L404">            Task[] loaded = gson.fromJson(reader, Task[].class);</span>
+<span class="pc bpc" id="L405" title="1 of 2 branches missed.">            if (loaded != null) tasks.addAll(Arrays.asList(loaded));</span>
+<span class="fc" id="L406">            ColorText.success(&quot;📂 Loaded &quot; + tasks.size() + &quot; task(s) from tasks.json&quot;);</span>
+<span class="nc" id="L407">        } catch (Exception e) {</span>
+<span class="nc" id="L408">            ColorText.warn(&quot;⚠️ Could not load tasks.json: &quot; + e.getMessage());</span>
+<span class="fc" id="L409">        }</span>
+<span class="fc" id="L410">    }</span>
     private static void showStartupSummary() {
-<span class="nc bnc" id="L411" title="All 2 branches missed.">        if (tasks.isEmpty()) {</span>
-<span class="nc" id="L412">            ColorText.info(&quot;\n📭 No tasks yet. Let's add your first one!&quot;);</span>
-<span class="nc" id="L413">            return;</span>
+<span class="pc bpc" id="L412" title="1 of 2 branches missed.">        if (tasks.isEmpty()) {</span>
+<span class="nc" id="L413">            ColorText.info(&quot;\n📭 No tasks yet. Let's add your first one!&quot;);</span>
+<span class="nc" id="L414">            return;</span>
         }
 
-<span class="nc" id="L416">        long totalActive = TodoLogic.countActive(tasks);</span>
-<span class="nc" id="L417">        long dueSoon = TodoLogic.countDueSoon(tasks);</span>
-<span class="nc" id="L418">        long overdue = TodoLogic.countOverdue(tasks);</span>
+<span class="fc" id="L417">        long totalActive = TodoLogic.countActive(tasks);</span>
+<span class="fc" id="L418">        long dueSoon = TodoLogic.countDueSoon(tasks);</span>
+<span class="fc" id="L419">        long overdue = TodoLogic.countOverdue(tasks);</span>
 
-<span class="nc" id="L420">        ColorText.line();</span>
-<span class="nc" id="L421">        ColorText.info(String.format(</span>
+<span class="fc" id="L421">        ColorText.line();</span>
+<span class="fc" id="L422">        ColorText.info(String.format(</span>
             &quot;📅 You have %d active task%s (%d due soon, %d overdue)&quot;,
-<span class="nc" id="L423">            totalActive,</span>
-<span class="nc bnc" id="L424" title="All 2 branches missed.">            totalActive == 1 ? &quot;&quot; : &quot;s&quot;,</span>
-<span class="nc" id="L425">            dueSoon,</span>
-<span class="nc" id="L426">            overdue</span>
+<span class="fc" id="L424">            totalActive,</span>
+<span class="pc bpc" id="L425" title="1 of 2 branches missed.">            totalActive == 1 ? &quot;&quot; : &quot;s&quot;,</span>
+<span class="fc" id="L426">            dueSoon,</span>
+<span class="fc" id="L427">            overdue</span>
         ));
 
         // Optional: motivational touch
-<span class="nc bnc" id="L430" title="All 2 branches missed.">        if (overdue &gt; 0)</span>
-<span class="nc" id="L431">            ColorText.warn(&quot;⚠️  Time to catch up!&quot;);</span>
-<span class="nc bnc" id="L432" title="All 2 branches missed.">        else if (dueSoon &gt; 0)</span>
-<span class="nc" id="L433">            ColorText.success(&quot;🌟 You're on top of it!&quot;);</span>
+<span class="pc bpc" id="L431" title="1 of 2 branches missed.">        if (overdue &gt; 0)</span>
+<span class="nc" id="L432">            ColorText.warn(&quot;⚠️  Time to catch up!&quot;);</span>
+<span class="pc bpc" id="L433" title="1 of 2 branches missed.">        else if (dueSoon &gt; 0)</span>
+<span class="fc" id="L434">            ColorText.success(&quot;🌟 You're on top of it!&quot;);</span>
         else
-<span class="nc" id="L435">            ColorText.success(&quot;✅ All caught up!&quot;);</span>
-<span class="nc" id="L436">    }</span>
+<span class="nc" id="L436">            ColorText.success(&quot;✅ All caught up!&quot;);</span>
+<span class="fc" id="L437">    }</span>
 
     /** Helper to escape quotes for JSON */
     private static String escapeJson(String s) {
-<span class="nc" id="L440">        return s.replace(&quot;\\&quot;, &quot;\\\\&quot;).replace(&quot;\&quot;&quot;, &quot;\\\&quot;&quot;);</span>
+<span class="nc" id="L441">        return s.replace(&quot;\\&quot;, &quot;\\\\&quot;).replace(&quot;\&quot;&quot;, &quot;\\\&quot;&quot;);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

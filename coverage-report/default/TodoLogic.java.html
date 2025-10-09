@@ -12,7 +12,7 @@ import java.util.List;
     public static long countDueSoon(List&lt;Task&gt; tasks) {
 <span class="fc" id="L13">        return tasks.stream()</span>
 <span class="fc bfc" id="L14" title="All 2 branches covered.">            .filter(t -&gt; !t.isCompleted()</span>
-<span class="pc bpc" id="L15" title="1 of 2 branches missed.">                    &amp;&amp; t.getDue() != null</span>
+<span class="fc bfc" id="L15" title="All 2 branches covered.">                    &amp;&amp; t.getDue() != null</span>
 <span class="fc bfc" id="L16" title="All 2 branches covered.">                    &amp;&amp; !LocalDate.now().isAfter(t.getDue())</span>
 <span class="fc bfc" id="L17" title="All 2 branches covered.">                    &amp;&amp; !t.getDue().isAfter(LocalDate.now().plusDays(3)))</span>
 <span class="fc" id="L18">            .count();</span>
