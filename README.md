@@ -41,6 +41,7 @@ You interact with the program through the command line:
 7. Exit
 ```
 ## Setup & Run 
+**Options**
 1. Using Makefile
 ```bash
 make
