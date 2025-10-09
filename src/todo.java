@@ -44,7 +44,6 @@ public class todo {
         System.out.print(ColorText.YELLOW + "Enter task: " + ColorText.RESET);
         String name = scanner.nextLine().trim();
         if (name.isEmpty()) {
-            beep();
             ColorText.warn("You can’t add an empty task!");
             return;
         }

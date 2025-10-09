@@ -11,6 +11,11 @@
     "completed": false
   },
   {
+    "name": "Code",
+    "priority": "HIGH",
+    "completed": false
+  },
+  {
     "name": "Read",
     "priority": "MED",
     "due": "2025-10-09",
