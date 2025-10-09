@@ -1,0 +1,20 @@
+# Compiled files
+*.class
+
+# User data
+tasks.json
+tasks.md
+
+# Logs
+*.log
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Libraries
+lib/
